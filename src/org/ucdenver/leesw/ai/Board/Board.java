@@ -45,6 +45,9 @@ public class Board {
             result += "\n";
         }
 
+        result += "Board Value: " + this.getBoardValue();
+        result += "\n";
+
         return result;
     }
 
@@ -63,7 +66,7 @@ public class Board {
             for (int j = 0; j < other.tiles[i].length; ++j) {
                 Tile tile = other.tiles[i][j];
                 this.tiles[i][j] = new Tile();
-                if (tile.getPiece() != null) {
+                if (tile != null && tile.getPiece() != null) {
                     Piece piece = null;
                     try {
                         Piece otherPiece = tile.getPiece();
@@ -85,5 +88,19 @@ public class Board {
 
     public Tile getTile(int x, int y) {
         return this.tiles[x][y];
+    }
+
+    public int getBoardValue() {
+        int result = 0;
+
+        for (int i = 0; i <= BOARD_WIDTH; ++i) {
+            for (int j = 0; j <= BOARD_HEIGHT; ++j) {
+                if (this.tiles[i][j] != null && this.tiles[i][j].getPiece() != null) {
+                    result += this.tiles[i][j].getPiece().getValue();
+                }
+            }
+        }
+
+        return result;
     }
 }

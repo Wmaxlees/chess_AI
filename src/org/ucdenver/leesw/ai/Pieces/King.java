@@ -16,6 +16,6 @@ public class King extends Piece {
 
     @Override
     public int getValue() {
-        return PIECE_VALUE;
+        return (this.color == Color.WHITE ? PIECE_VALUE : -PIECE_VALUE);
     }
 }

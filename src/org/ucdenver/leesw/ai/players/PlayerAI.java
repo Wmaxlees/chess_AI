@@ -41,8 +41,8 @@ public class PlayerAI implements Player {
         ArrayList<Board> subStates = new ArrayList<>();
 
         ArrayList<Move> moves = new ArrayList<>();
-        for (int i = 1; i < Board.BOARD_HEIGHT; ++i) {
-            for (int j = 1; j < Board.BOARD_WIDTH; ++j) {
+        for (int i = 1; i <= Board.BOARD_HEIGHT; ++i) {
+            for (int j = 1; j <= Board.BOARD_WIDTH; ++j) {
                 Piece piece = state.getTile(j, i).getPiece();
                 if (piece != null && piece.getColor() == this.team) {
                     try {
