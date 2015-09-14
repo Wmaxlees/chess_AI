@@ -40,19 +40,27 @@ public class Game {
         // Set initial state of board
         King blackKing = new King();                    // Black King
         blackKing.setColor(Color.BLACK);
-        currentState.addPiece(1, 6, blackKing);
+        blackKing.setX(1);
+        blackKing.setY(6);
+        currentState.addPiece(blackKing);
 
         King whiteKing = new King();                    // White King
         whiteKing.setColor(Color.WHITE);
-        currentState.addPiece(8, 8, whiteKing);
+        whiteKing.setX(8);
+        whiteKing.setY(8);
+        currentState.addPiece(whiteKing);
 
         Pawn blackPawn = new Pawn();                    // Black Pawn
         blackPawn.setColor(Color.BLACK);
-        currentState.addPiece(8, 5, blackPawn);
+        blackPawn.setX(8);
+        blackPawn.setY(5);
+        currentState.addPiece(blackPawn);
 
         Pawn whitePawn = new Pawn();                    // White Pawn
         whitePawn.setColor(Color.WHITE);
-        currentState.addPiece(3, 6, whitePawn);
+        whitePawn.setX(3);
+        whitePawn.setY(6);
+        currentState.addPiece(whitePawn);
     }
 
     @Override

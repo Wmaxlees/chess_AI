@@ -25,7 +25,6 @@ public class Main extends Application {
         System.out.print(Game.getGame().toString() + "\n\n\n\n\n");
 
         while (!Game.getGame().isOver()) {
-            Thread.sleep(2000);
 
             Game.getGame().takeTurn();
             System.out.print(Game.getGame().toString() + "\n\n\n\n\n");

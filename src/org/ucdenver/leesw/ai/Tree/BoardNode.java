@@ -10,10 +10,31 @@ import java.util.List;
  */
 public class BoardNode {
     private List<BoardNode> subTree;
+    private BoardNode parent;
+    private int value;
     private Board data;
 
     public BoardNode(Board data) {
         this.data = data;
+    }
+
+    public BoardNode getParent() {
+        return this.parent;
+    }
+
+    public void setParent(BoardNode parent) {
+        this.parent = parent;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        if (parent != null && parent.getValue() < value) {
+            parent.setValue(value);
+        }
+        this.value = value;
     }
 
     public void addNode(BoardNode node) {
@@ -22,6 +43,10 @@ public class BoardNode {
         }
 
         this.subTree.add(node);
+    }
+
+    public List<BoardNode> getChildren() {
+        return subTree;
     }
 
     public Board getData() {

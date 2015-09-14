@@ -1,7 +1,6 @@
 package org.ucdenver.leesw.ai.players;
 
 import org.ucdenver.leesw.ai.Board.Board;
-import org.ucdenver.leesw.ai.Board.Tile;
 import org.ucdenver.leesw.ai.Game;
 import org.ucdenver.leesw.ai.Pieces.Color;
 import org.ucdenver.leesw.ai.Pieces.Piece;
@@ -19,7 +18,7 @@ import java.util.Stack;
  * Created by william.lees on 9/10/15.
  */
 public class PlayerAI implements Player {
-    private static final int MAX_SEARCH_DEPTH = 11;
+    private static final int MAX_SEARCH_DEPTH = 8;
 
     private Color team;
     private MoveGenerator moveGenerator;
@@ -54,6 +53,9 @@ public class PlayerAI implements Player {
             // Get the next node to expand
             BoardPair current = searchOrder.pop();
 
+            // Print depth
+            // System.out.println("Search Depth: " + current.depth);
+
             // Make sure this isn't the max depth
             if (current.depth > MAX_SEARCH_DEPTH) {
                 continue;
@@ -62,6 +64,13 @@ public class PlayerAI implements Player {
             // Generate the list of possibilities and add them to the stack and tree
             List<Board> possibilities = this.generateNextLayer(current.data.getData());
             for (Board possibility : possibilities) {
+                // Check if we can cut this off
+                if (current.depth == MAX_SEARCH_DEPTH) {
+                    if (possibility.getBoardValue() < minValue) {
+                        // System.out.println("Cutoff!!!");
+                        break;
+                    }
+                }
 
                 // Add to stack
                 BoardPair pair = new BoardPair();
@@ -74,7 +83,8 @@ public class PlayerAI implements Player {
             }
 
             // Get the minimum value of the layer
-            if (current.depth == MAX_SEARCH_DEPTH-1) {
+            if (current.depth == MAX_SEARCH_DEPTH) {
+
                 int minOfLayer = Integer.MAX_VALUE;
                 for (Board possibility : possibilities) {
                     int boardValue = possibility.getBoardValue();
@@ -86,10 +96,24 @@ public class PlayerAI implements Player {
                 if (minOfLayer > minValue) {
                     minValue = minOfLayer;
                 }
+
+                // Propogate the min value up
+                current.data.setValue(minValue);
             }
         }
 
-        return moveTree.getData();
+        // Choose the best coarse
+        BoardNode target = moveTree;
+        if (moveTree.getChildren() != null) {
+            for (BoardNode child : moveTree.getChildren()) {
+                if (child.getValue() == target.getValue()) {
+                    target = child;
+                    break;
+                }
+            }
+        }
+
+        return target.getData();
     }
 
     private List<Board> generateNextLayer(Board state) {
@@ -98,7 +122,7 @@ public class PlayerAI implements Player {
         ArrayList<Move> moves = new ArrayList<>();
         for (int i = 1; i <= Board.BOARD_HEIGHT; ++i) {
             for (int j = 1; j <= Board.BOARD_WIDTH; ++j) {
-                Piece piece = state.getTile(j, i).getPiece();
+                Piece piece = state.getTile(j, i);
                 if (piece != null && piece.getColor() == this.team) {
                     try {
                         moves.addAll(moveGenerator.generateMoves(j, i, piece));
@@ -113,14 +137,22 @@ public class PlayerAI implements Player {
 
         if (moves != null) {
             for (Move move : moves) {
-                System.out.println(move.toString());
-
                 Board board = new Board(state);
-                board.removePiece(move.getStartX(), move.getStartY());
-                board.addPiece(move.getTargetX(), move.getTargetY(), move.getPiece());
 
-                System.out.print(board);
-                System.out.println("----------------------------");
+                board.removePiece(move.getStartX(), move.getStartY());
+
+                Piece piece = null;
+                try {
+                    piece = move.getPiece().getClass().newInstance();
+                    piece.setColor(move.getPiece().getColor());
+                    piece.setX(move.getTargetX());
+                    piece.setY(move.getTargetY());
+
+                } catch (Exception e) {
+                    System.out.println("Could not generate new instance of piece class");
+                    System.exit(-1);
+                }
+                board.addPiece(piece);
 
                 subStates.add(board);
             }

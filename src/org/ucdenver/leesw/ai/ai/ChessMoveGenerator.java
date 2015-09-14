@@ -1,10 +1,7 @@
 package org.ucdenver.leesw.ai.ai;
 
 import org.ucdenver.leesw.ai.Board.Board;
-import org.ucdenver.leesw.ai.Pieces.Color;
-import org.ucdenver.leesw.ai.Pieces.King;
-import org.ucdenver.leesw.ai.Pieces.Pawn;
-import org.ucdenver.leesw.ai.Pieces.Piece;
+import org.ucdenver.leesw.ai.Pieces.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,23 +87,37 @@ public class ChessMoveGenerator implements MoveGenerator {
                 boolean atBottom = y == 1;
 
                 if (!atBottom) {
-                    Move move = new Move(x, y-1);           // Move south one space
+                    Move move = new Move(x, y - 1);           // Move south one space
                     move.setStartX(x);
                     move.setStartY(y);
-                    move.setPiece(piece);
+                    if (y-1 == 1) {
+                        Queen queen = new Queen();
+                        queen.setColor(piece.getColor());
+                        move.setPiece(queen);
+                    } else {
+                        move.setPiece(piece);
+                    }
                     moves.add(move);
                 }
             } else {
                 boolean atTop = y == Board.BOARD_HEIGHT;
 
                 if (!atTop) {
-                    Move move = new Move(x, y+1);           // Move north one space
+                    Move move = new Move(x, y + 1);           // Move north one space
                     move.setStartX(x);
                     move.setStartY(y);
-                    move.setPiece(piece);
+                    if (y+1 == Board.BOARD_HEIGHT) {
+                        Queen queen = new Queen();
+                        queen.setColor(piece.getColor());
+                        move.setPiece(queen);
+                    } else {
+                        move.setPiece(piece);
+                    }
                     moves.add(move);
                 }
             }
+        } else if (piece.getClass() == Queen.class) {
+
         } else {
             throw new UnknownPieceException();
         }
