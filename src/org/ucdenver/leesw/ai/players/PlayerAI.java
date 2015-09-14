@@ -5,6 +5,7 @@ import org.ucdenver.leesw.ai.Board.Tile;
 import org.ucdenver.leesw.ai.Game;
 import org.ucdenver.leesw.ai.Pieces.Color;
 import org.ucdenver.leesw.ai.Pieces.Piece;
+import org.ucdenver.leesw.ai.Tree.BoardNode;
 import org.ucdenver.leesw.ai.ai.ChessMoveGenerator;
 import org.ucdenver.leesw.ai.ai.Move;
 import org.ucdenver.leesw.ai.ai.MoveGenerator;
@@ -12,13 +13,22 @@ import org.ucdenver.leesw.ai.ai.UnknownPieceException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Created by william.lees on 9/10/15.
  */
 public class PlayerAI implements Player {
+    private static final int MAX_SEARCH_DEPTH = 11;
+
     private Color team;
     private MoveGenerator moveGenerator;
+    private BoardNode moveTree;
+
+    private class BoardPair {
+        public int depth;
+        public BoardNode data;
+    }
 
     public PlayerAI(Color team) {
         this.team = team;
@@ -26,18 +36,63 @@ public class PlayerAI implements Player {
     }
 
     @Override
+    // TODO: MEMOIZE THE RESULTS OF THE SEARCH
     public Board getNextMove() {
-        List<Board> possibilities = this.generateSubTree(Game.getGame().getBoard());
-        System.out.println("Number of possible moves: " + possibilities.size());
+        // Create the root node
+        moveTree = new BoardNode(Game.getGame().getBoard());
 
-//        for (Board possibility : possibilities) {
-//            System.out.println(possibility);
-//            System.out.println("----------------------------");
-//        }
-        return possibilities.get((int)(Math.random()*possibilities.size()));
+        // Create the first item for the stack
+        BoardPair first = new BoardPair();
+        first.data = moveTree;
+        first.depth = 0;
+
+        // Generate each layer of the tree up to the max depth
+        Stack<BoardPair> searchOrder = new Stack<>();
+        searchOrder.push(first);
+        int minValue = Integer.MIN_VALUE;
+        while (searchOrder.size() > 0) {
+            // Get the next node to expand
+            BoardPair current = searchOrder.pop();
+
+            // Make sure this isn't the max depth
+            if (current.depth > MAX_SEARCH_DEPTH) {
+                continue;
+            }
+
+            // Generate the list of possibilities and add them to the stack and tree
+            List<Board> possibilities = this.generateNextLayer(current.data.getData());
+            for (Board possibility : possibilities) {
+
+                // Add to stack
+                BoardPair pair = new BoardPair();
+                pair.data = new BoardNode(possibility);
+                pair.depth = current.depth+1;
+                searchOrder.push(pair);
+
+                // Add to tree
+                current.data.addNode(pair.data);
+            }
+
+            // Get the minimum value of the layer
+            if (current.depth == MAX_SEARCH_DEPTH-1) {
+                int minOfLayer = Integer.MAX_VALUE;
+                for (Board possibility : possibilities) {
+                    int boardValue = possibility.getBoardValue();
+                    if (minOfLayer > boardValue)
+                        minOfLayer = boardValue;
+                }
+
+                // If this layer has a greater minimum, assign the new value
+                if (minOfLayer > minValue) {
+                    minValue = minOfLayer;
+                }
+            }
+        }
+
+        return moveTree.getData();
     }
 
-    private List<Board> generateSubTree(Board state) {
+    private List<Board> generateNextLayer(Board state) {
         ArrayList<Board> subStates = new ArrayList<>();
 
         ArrayList<Move> moves = new ArrayList<>();
