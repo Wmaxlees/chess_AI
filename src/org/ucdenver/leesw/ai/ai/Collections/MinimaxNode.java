@@ -1,6 +1,6 @@
-package org.ucdenver.leesw.ai.ai.Collections;
+package org.ucdenver.leesw.ai.ai.collections;
 
-import org.ucdenver.leesw.ai.Board.Board;
+import org.ucdenver.leesw.ai.board.impl.BoardOld;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,27 +10,17 @@ import java.util.List;
  */
 public class MinimaxNode {
     private List<MinimaxNode> subTree;
-    private MinimaxNode parent;
     private int value;
-    private Board data;
+    private BoardOld data;
 
-    public MinimaxNode(Board data) {
+    public MinimaxNode(BoardOld data) {
         this.data = data;
-    }
-
-    public MinimaxNode getParent() {
-        return this.parent;
-    }
-
-    public void setParent(MinimaxNode parent) {
-        this.parent = parent;
     }
 
     public int getValue() {
         return value;
     }
 
-    // Set this node's value
     public void setValue(int value) {
         this.value = value;
     }
@@ -47,12 +37,28 @@ public class MinimaxNode {
         return subTree;
     }
 
-    public Board getData() {
+    public BoardOld getData() {
         return data;
     }
 
     public static void addNode(MinimaxNode child, MinimaxNode parent) {
         parent.addChild(child);
-        child.setParent(parent);
+    }
+
+    public static void clear(MinimaxNode root) {
+        if (root.subTree != null && root.subTree.size() > 0) {
+            root.subTree.clear();
+        }
+
+    }
+
+    private static void clearSubNode(MinimaxNode node) {
+        if (node.subTree != null && node.subTree.size() > 0) {
+            for (MinimaxNode subNode : node.subTree) {
+                clearSubNode(subNode);
+            }
+            node.subTree.clear();
+        }
+        node.data.destroy();
     }
 }

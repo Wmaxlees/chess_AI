@@ -1,49 +1,57 @@
 package org.ucdenver.leesw.ai.players;
 
-import org.ucdenver.leesw.ai.Board.Board;
-import org.ucdenver.leesw.ai.Board.Coordinates;
-import org.ucdenver.leesw.ai.ai.Collections.SearchItem;
-import org.ucdenver.leesw.ai.ai.Collections.SearchStack;
+import javafx.util.Pair;
+import org.ucdenver.leesw.ai.ai.impl.ChessMoveGeneratorOld;
+import org.ucdenver.leesw.ai.ai.impl.MoveOld;
+import org.ucdenver.leesw.ai.ai.impl.SimpleChessHeuristic;
+import org.ucdenver.leesw.ai.board.impl.BoardOld;
+import org.ucdenver.leesw.ai.board.Coordinates;
 import org.ucdenver.leesw.ai.Game;
-import org.ucdenver.leesw.ai.Pieces.Color;
-import org.ucdenver.leesw.ai.Pieces.Piece;
-import org.ucdenver.leesw.ai.ai.Collections.MinimaxNode;
+import org.ucdenver.leesw.ai.pieces.Team;
+import org.ucdenver.leesw.ai.pieces.Piece;
+import org.ucdenver.leesw.ai.ai.collections.MinimaxNode;
 import org.ucdenver.leesw.ai.ai.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by william.lees on 9/10/15.
  */
 public class PlayerAI implements Player {
     // Depth of AI search
-    private static final int MAX_SEARCH_DEPTH = 9;
+    private static final int MAX_SEARCH_DEPTH = 11;
 
     // Team
-    private Color team;
+    private boolean team;
 
     // AI Stuff
     private MoveGenerator moveGenerator;
     private Heurisitic heurisitic;
     private MinimaxNode moveTree;
 
-    public PlayerAI(Color team) {
+    public PlayerAI(boolean team) {
         this.team = team;
-        this.moveGenerator = new ChessMoveGenerator();
+        this.moveGenerator = new ChessMoveGeneratorOld();
         this.heurisitic = new SimpleChessHeuristic();
     }
 
     @Override
-    public Board getNextMove() {
+    public BoardOld getNextMove() {
 
         // Create the root node
-        moveTree = new MinimaxNode(Game.getGame().getBoard());
+        moveTree = new MinimaxNode(new BoardOld(Game.getGame().getBoard()));
 
         this.generateSubTree(moveTree, MAX_SEARCH_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
 
         List<MinimaxNode> children = moveTree.getChildren();
+
+        // Check if there are no more moves
+        if (children.size() == 0) {
+            System.out.println("No more possible moves");
+            System.exit(0);
+        }
+
         MinimaxNode result = null;
         for (MinimaxNode child : children) {
             if (result == null) {
@@ -53,69 +61,11 @@ public class PlayerAI implements Player {
             }
         }
 
-        return result.getData();
+        // Clear out Hash memory
+        MinimaxNode.clear(moveTree);
 
-//        // Logging information
-//        int movesConsidered = 0;
-//
-//        // Create the root node
-//        moveTree = new MinimaxNode(Game.getGame().getBoard());
-//        moveTree.setValue(Integer.MIN_VALUE);
-//
-//        // Add first item to search stack
-//        SearchStack searchOrder = new SearchStack();
-//        searchOrder.push(moveTree, 0);
-//
-//
-//
-//        // Generate each layer of the tree up to the max depth
-//        while (searchOrder.size() > 0) {
-//            // Get the next node
-//            SearchItem current = searchOrder.pop();
-//
-//            // Make sure this isn't the max depth
-//            if (current.getDepth() > MAX_SEARCH_DEPTH) {
-//                continue;
-//            }
-//
-//            if (current.getDepth() % 2 == 0) {
-//                // Player Chooses Maximum Child
-//            } else {
-//                // Player Chooses Minimum Child
-//            }
-//
-//            // Generate node's children
-//            List<Board> children = this.generateChildStates(current.getNode().getData());
-//
-//            // Process children
-//            for (Board child : children) {
-//                ++movesConsidered;
-//
-//                // Add to tree and stack
-//                MinimaxNode childNode = new MinimaxNode(child);
-//                MinimaxNode.addNode(childNode, current.getNode());
-//                if (current.getDepth() != MAX_SEARCH_DEPTH) {
-//                    searchOrder.push(childNode, current.getDepth() + 1);
-//                } else {
-//                    childNode.setValue(heurisitic.generateValue(child));
-//                }
-//            }
-//        }
-//
-//        // Choose the best coarse
-//        MinimaxNode target = moveTree;
-//        if (moveTree.getChildren() != null) {
-//            for (MinimaxNode child : moveTree.getChildren()) {
-//                if (child.getValue() == target.getValue()) {
-//                    target = child;
-//                    break;
-//                }
-//            }
-//        }
-//
-//        System.out.println("Moves Considered: " + movesConsidered);
-//
-//        return target.getData();
+        // Return resulting board
+        return new BoardOld(result.getData());
     }
 
     private int generateSubTree(MinimaxNode root, int depth, int α, int β, boolean max) {
@@ -131,10 +81,10 @@ public class PlayerAI implements Player {
             int value = Integer.MIN_VALUE;
 
             // Generate the child states
-            List<Board> children = this.generateChildStates(root.getData(), team);
+            List<BoardOld> children = this.generateChildStates(root.getData(), team);
 
             // Process the child states
-            for (Board child : children) {
+            for (BoardOld child : children) {
                 // Add the node to the tree
                 MinimaxNode childNode = new MinimaxNode(child);
                 MinimaxNode.addNode(childNode, root);
@@ -145,6 +95,11 @@ public class PlayerAI implements Player {
 
                 // Check for beta cutoff
                 if (β <= α) {
+                    // Clear the subtree to free space
+                    if (root.getChildren() != null) {
+                        root.getChildren().clear();
+                    }
+
                     break;
                 }
             }
@@ -157,10 +112,10 @@ public class PlayerAI implements Player {
             int value = Integer.MAX_VALUE;
 
             // Generate the child states
-            List<Board> children = this.generateChildStates(root.getData(), (team == Color.BLACK) ? Color.WHITE : Color.BLACK);
+            List<BoardOld> children = this.generateChildStates(root.getData(), (team == Team.BLACK) ? Team.WHITE : Team.BLACK);
 
             // Process the child states
-            for (Board child : children) {
+            for (BoardOld child : children) {
                 // Add the node to the tree
                 MinimaxNode childNode = new MinimaxNode(child);
                 MinimaxNode.addNode(childNode, root);
@@ -170,6 +125,11 @@ public class PlayerAI implements Player {
 
                 // Check for alpha cutoff
                 if (β <= α) {
+                    // Clear the subtree to free space
+                    if (root.getChildren() != null) {
+                        root.getChildren().clear();
+                    }
+
                     break;
                 }
             }
@@ -179,20 +139,20 @@ public class PlayerAI implements Player {
         }
     }
 
-    private List<Board> generateChildStates(Board state, Color turn) {
-        ArrayList<Board> subStates = new ArrayList<>();
+    private List<BoardOld> generateChildStates(BoardOld state, boolean turn) {
+        ArrayList<BoardOld> subStates = new ArrayList<>();
 
-        ArrayList<Move> moves = new ArrayList<>();
+        ArrayList<MoveOld> moves = new ArrayList<>();
 
-        for (Map.Entry<Coordinates, Piece> entry : state.getPieces().entrySet()) {
+        for (Pair<Coordinates, Byte> entry : state.getPieces()) {
 
             try {
-                Piece piece = entry.getValue();
+                byte piece = entry.getValue();
                 Coordinates coordinates = entry.getKey();
 
                 // Check if the piece is on the current players team before generating moves
-                if (piece.getColor() == turn) {
-                    List<Move> newMoves = moveGenerator.generateMoves(coordinates.getX(), coordinates.getY(), entry.getValue());
+                if (Piece.getColor(piece) == turn) {
+                    List<MoveOld> newMoves = moveGenerator.generateMoves(coordinates.getX(), coordinates.getY(), entry.getValue());
                     moves.addAll(newMoves);
                 }
 
@@ -204,24 +164,29 @@ public class PlayerAI implements Player {
 
 
         if (moves != null) {
-            for (Move move : moves) {
-                Board board = new Board(state);
+            for (MoveOld move : moves) {
+                if (!move.isCaptureOnly() && !move.isFreeSpaceOnly()) {
+                    BoardOld board = new BoardOld(state);
 
-                board.removePiece(move.getStartX(), move.getStartY());
+                    board.removePiece(move.getStartX(), move.getStartY());
+                    board.addPiece(move.getTargetX(), move.getTargetY(), move.getPiece());
 
-                Piece piece = null;
-                try {
-                    piece = move.getPiece().getClass().newInstance();
-                    piece.setColor(move.getPiece().getColor());
+                    subStates.add(board);
+                } else if (move.isCaptureOnly() && state.getPiece(move.getTargetX(), move.getTargetY()) != null) {
+                    BoardOld board = new BoardOld(state);
 
-                } catch (Exception e) {
-                    System.out.println("Could not generate new instance of piece class");
-                    System.exit(-1);
+                    board.removePiece(move.getStartX(), move.getStartY());
+                    board.addPiece(move.getTargetX(), move.getTargetY(), move.getPiece());
+
+                    subStates.add(board);
+                } else if (move.isFreeSpaceOnly() && state.getPiece(move.getTargetX(), move.getTargetY()) == null) {
+                    BoardOld board = new BoardOld(state);
+
+                    board.removePiece(move.getStartX(), move.getStartY());
+                    board.addPiece(move.getTargetX(), move.getTargetY(), move.getPiece());
+
+                    subStates.add(board);
                 }
-
-                board.addPiece(move.getTargetX(), move.getTargetY(), piece);
-
-                subStates.add(board);
             }
         }
 

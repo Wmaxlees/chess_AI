@@ -1,6 +1,6 @@
-package org.ucdenver.leesw.ai.Board;
+package org.ucdenver.leesw.ai.board;
 
-import org.ucdenver.leesw.ai.Pieces.Piece;
+import org.ucdenver.leesw.ai.pieces.Piece;
 
 import java.util.ArrayList;
 

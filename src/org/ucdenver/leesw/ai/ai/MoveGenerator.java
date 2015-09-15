@@ -1,6 +1,6 @@
 package org.ucdenver.leesw.ai.ai;
 
-import org.ucdenver.leesw.ai.Pieces.Piece;
+import org.ucdenver.leesw.ai.ai.impl.MoveOld;
 
 import java.util.List;
 
@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface MoveGenerator {
 
-    public List<Move> generateMoves(int x, int y, Piece piece) throws UnknownPieceException;
+    public List<MoveOld> generateMoves(int x, int y, byte piece) throws UnknownPieceException;
 }

@@ -1,4 +1,4 @@
-package org.ucdenver.leesw.ai.ai.Collections;
+package org.ucdenver.leesw.ai.ai.collections;
 
 import java.util.Stack;
 

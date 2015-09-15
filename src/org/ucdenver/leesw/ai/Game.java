@@ -1,11 +1,8 @@
 package org.ucdenver.leesw.ai;
 
-import org.ucdenver.leesw.ai.Board.Board;
-import org.ucdenver.leesw.ai.Pieces.Color;
-import org.ucdenver.leesw.ai.Pieces.King;
-import org.ucdenver.leesw.ai.Pieces.Pawn;
-import org.ucdenver.leesw.ai.ai.Heurisitic;
-import org.ucdenver.leesw.ai.ai.SimpleChessHeuristic;
+import org.ucdenver.leesw.ai.board.impl.BoardOld;
+import org.ucdenver.leesw.ai.pieces.Team;
+import org.ucdenver.leesw.ai.pieces.Piece;
 import org.ucdenver.leesw.ai.players.Player;
 import org.ucdenver.leesw.ai.players.PlayerAI;
 
@@ -13,13 +10,12 @@ import org.ucdenver.leesw.ai.players.PlayerAI;
  * Created by william.lees on 9/10/15.
  */
 public class Game {
-    private Board           currentState;
+    private BoardOld currentState;
     private boolean         playing;
-    private Color           turn;
+    private boolean         turn;
+
     private Player          playerWhite;
     private Player          playerBlack;
-
-    private Heurisitic      heuristic;
 
     private static Game     _singleton;
 
@@ -33,32 +29,15 @@ public class Game {
 
     private Game() {
         // Initialize the game state
-        this.currentState = new Board();
-        this.turn = Color.WHITE;
+        this.turn = Team.WHITE;
         this.playing = true;
 
         // Create the players
-        this.playerWhite = new PlayerAI(Color.WHITE);
-        this.playerBlack = new PlayerAI(Color.BLACK);
+        this.playerWhite = new PlayerAI(Team.WHITE);
+        this.playerBlack = new PlayerAI(Team.BLACK);
 
         // Set initial state of board
-        King blackKing = new King();                    // Black King
-        blackKing.setColor(Color.BLACK);
-        currentState.addPiece(1, 6, blackKing);
-
-        King whiteKing = new King();                    // White King
-        whiteKing.setColor(Color.WHITE);
-        currentState.addPiece(8, 8, whiteKing);
-
-        Pawn blackPawn = new Pawn();                    // Black Pawn
-        blackPawn.setColor(Color.BLACK);
-        currentState.addPiece(8, 5, blackPawn);
-
-        Pawn whitePawn = new Pawn();                    // White Pawn
-        whitePawn.setColor(Color.WHITE);
-        currentState.addPiece(3, 6, whitePawn);
-
-        heuristic = new SimpleChessHeuristic();
+        this.setupGame(GameType.R_RETI_ENDGAME);
     }
 
     @Override
@@ -71,18 +50,53 @@ public class Game {
     }
 
     public void takeTurn() {
-        if (turn == Color.WHITE) {
+        if (turn == Team.WHITE) {
             this.currentState = this.playerWhite.getNextMove();
-            turn = Color.BLACK;
+            turn = Team.BLACK;
             System.out.println("White's Turn");
         } else {
             this.currentState = this.playerBlack.getNextMove();
-            turn = Color.WHITE;
+            turn = Team.WHITE;
             System.out.println("Black's Turn");
         }
     }
 
-    public Board getBoard() {
+    public BoardOld getBoard() {
         return this.currentState;
+    }
+
+    private void setupGame(GameType gameType) {
+        this.currentState = new BoardOld();
+
+        if (gameType == GameType.PAWN_ONLY) {
+            currentState.addPiece(1, 2, Piece.WHITE_PAWN);
+            currentState.addPiece(2, 2, Piece.WHITE_PAWN);
+            currentState.addPiece(3, 2, Piece.WHITE_PAWN);
+            currentState.addPiece(4, 2, Piece.WHITE_PAWN);
+            currentState.addPiece(5, 2, Piece.WHITE_PAWN);
+            currentState.addPiece(6, 2, Piece.WHITE_PAWN);
+            currentState.addPiece(7, 2, Piece.WHITE_PAWN);
+            currentState.addPiece(8, 2, Piece.WHITE_PAWN);
+
+            currentState.addPiece(1, 7, Piece.BLACK_PAWN);
+            currentState.addPiece(2, 7, Piece.BLACK_PAWN);
+            currentState.addPiece(3, 7, Piece.BLACK_PAWN);
+            currentState.addPiece(4, 7, Piece.BLACK_PAWN);
+            currentState.addPiece(5, 7, Piece.BLACK_PAWN);
+            currentState.addPiece(6, 7, Piece.BLACK_PAWN);
+            currentState.addPiece(7, 7, Piece.BLACK_PAWN);
+            currentState.addPiece(8, 7, Piece.BLACK_PAWN);
+        } else if (gameType == GameType.R_RETI_ENDGAME) {
+            currentState.addPiece(1, 6, Piece.BLACK_KING);
+            currentState.addPiece(8, 8, Piece.WHITE_KING);
+
+            currentState.addPiece(8, 5, Piece.BLACK_PAWN);
+            currentState.addPiece(3, 6, Piece.WHITE_PAWN);
+        }
+    }
+
+    private enum GameType {
+        PAWN_ONLY,
+        R_RETI_ENDGAME
     }
 }

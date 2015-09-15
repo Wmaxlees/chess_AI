@@ -1,4 +1,4 @@
-package org.ucdenver.leesw.ai.Board;
+package org.ucdenver.leesw.ai.board;
 
 /**
  * Created by william.lees on 9/14/15.

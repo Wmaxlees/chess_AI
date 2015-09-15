@@ -25,10 +25,9 @@ public class Main extends Application {
         System.out.print(Game.getGame().toString() + "\n\n\n\n\n");
 
         while (!Game.getGame().isOver()) {
-
             Game.getGame().takeTurn();
             System.out.print(Game.getGame().toString() + "\n\n\n");
-            System.in.read();
+            System.out.println("-------------------");
         }
     }
 }

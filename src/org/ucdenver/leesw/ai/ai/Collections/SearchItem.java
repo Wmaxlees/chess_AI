@@ -1,4 +1,4 @@
-package org.ucdenver.leesw.ai.ai.Collections;
+package org.ucdenver.leesw.ai.ai.collections;
 
 /**
  * Created by william.lees on 9/14/15.
