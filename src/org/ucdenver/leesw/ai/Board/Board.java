@@ -21,6 +21,9 @@ public interface Board {
     byte getPieceType(int x, int y);
     byte getPieceType(long mask);
 
+    // Population questions
+    byte getPopulationOfType(byte type);
+
     // Check if piece exists
     boolean doesPieceExist(int x, int y);
     boolean doesPieceExist(long mask);

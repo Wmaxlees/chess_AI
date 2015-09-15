@@ -13,6 +13,8 @@ public interface BitBoardLayer {
     long getBoard();
     void setBoard(long data);
 
+    byte getPopulationCount();
+
     static long and(BitBoardLayer lvalue, BitBoardLayer rvalue) {
         return lvalue.getBoard() & rvalue.getBoard();
     }

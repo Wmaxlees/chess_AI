@@ -49,6 +49,19 @@ public class ChessBitBoardLayer implements BitBoardLayer {
         this.board = data;
     }
 
+    @Override
+    public byte getPopulationCount() {
+        long pieces = this.board;
+        byte pop = 0;
+
+        while (pieces != 0) {
+            ++pop;
+            pieces &= pieces - 1; // Remove the lowest bit
+        }
+
+        return pop;
+    }
+
     private int getIndex(int y) {
         return y;
     }

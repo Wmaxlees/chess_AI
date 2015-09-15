@@ -10,7 +10,7 @@ import java.util.*;
 /**
  * Created by william.lees on 9/10/15.
  */
-public class BoardOld implements Board {
+public class BoardOld {
     // Board width and height
     public static final int BOARD_WIDTH = 8;
     public static final int BOARD_HEIGHT = 8;
@@ -62,14 +62,12 @@ public class BoardOld implements Board {
     }
 
     // Add a piece to the board
-    @Override
     public void addPiece(int x, int y, byte piece) {
         this.removePiece(x, y);
         this.pieces.add(new Pair<>(new Coordinates(x, y), piece));
     }
 
     // Remove a piece from a specific spot on the board
-    @Override
     public void removePiece(int x, int y) {
         Iterator<Pair<Coordinates, Byte>> iter = this.pieces.iterator();
         while (iter.hasNext()) {
@@ -82,7 +80,6 @@ public class BoardOld implements Board {
     }
 
     // Get a piece from a specific X, Y coordinate (if any exists)
-    @Override
     public Byte getPiece(int x, int y) {
         Iterator<Pair<Coordinates, Byte>> iter = this.pieces.iterator();
         while (iter.hasNext()) {
@@ -97,7 +94,6 @@ public class BoardOld implements Board {
         return null;
     }
 
-    @Override
     public void destroy() {
         this.pieces.clear();
     }

@@ -139,9 +139,21 @@ public class ChessBitBoard implements Board {
         return layer.getBoard();
     }
 
+    @Override
     public void destroy() {
         for (BitBoardLayer layer : layers) {
             layer = null;
         }
+    }
+
+    @Override
+    public byte getPopulationOfType(byte pieceType) {
+        // Sanity check
+        if (pieceType > Piece.NO_PIECE) {
+            logger.error("Attempting to get population of piece type that doesn't exist: {}", pieceType);
+            return 0;
+        }
+
+        return this.layers[pieceType].getPopulationCount();
     }
 }
