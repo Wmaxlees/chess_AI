@@ -10,7 +10,7 @@ import org.ucdenver.leesw.ai.players.impl.PlayerAI;
 /**
  * Created by william.lees on 9/10/15.
  */
-public class Game {
+public class GameLogic implements Runnable {
     private Board           currentState;
     private boolean         playing;
     private boolean         turn;
@@ -18,17 +18,17 @@ public class Game {
     private Player          playerWhite;
     private Player          playerBlack;
 
-    private static Game     _singleton;
+    private static GameLogic _singleton;
 
-    public static Game getGame() {
+    public static GameLogic getGame() {
         if (_singleton == null) {
-            _singleton = new Game();
+            _singleton = new GameLogic();
         }
 
         return _singleton;
     }
 
-    private Game() {
+    private GameLogic() {
         // Initialize the game state
         this.turn = Team.WHITE;
         this.playing = true;
@@ -50,7 +50,7 @@ public class Game {
         return !playing;
     }
 
-    public void takeTurn() {
+    public void run() {
         if (turn == Team.WHITE) {
             this.currentState = this.playerWhite.getNextMove();
             turn = Team.BLACK;

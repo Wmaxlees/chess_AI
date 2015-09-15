@@ -27,10 +27,12 @@ public class ChessBitBoard implements Board {
     }
 
     public ChessBitBoard(Board other) {
-        this();
+        layers = new BitBoardLayer[Piece.NO_PIECE];
 
-        for (byte i = 0; i < layers.length; ++i) {
-            this.layers[i].setBoard(other.getPiecesOfType(i));
+        if (other != null) {
+            for (byte i = 0; i < layers.length; ++i) {
+                this.layers[i].setBoard(other.getPiecesOfType(i));
+            }
         }
     }
 
@@ -169,5 +171,10 @@ public class ChessBitBoard implements Board {
     @Override
     public void applyMove(Move move) {
         this.layers[move.getPiece()].removePiece(move.getStartLocation());
+    }
+
+    @Override
+    public String toString() {
+        return "" + this.getPiecesOfType(Piece.WHITE_KING);
     }
 }

@@ -6,9 +6,6 @@ import org.ucdenver.leesw.ai.board.BitBoardLayer;
  * Created by william.lees on 9/15/15.
  */
 public class ChessBitBoardLayer implements BitBoardLayer {
-    private static final short BOARD_HEIGHT = 8;
-    private static final short BOARD_WIDTH = 8;
-
     private static final long[/*x*/][/*y*/] MASK =
             {
                     {0b01 <<  0, 0b01 <<  1, 0b01 <<  2, 0b01 <<  3, 0b01 <<  4, 0b01 <<  5, 0b01 <<  6, 0b01 <<  7},

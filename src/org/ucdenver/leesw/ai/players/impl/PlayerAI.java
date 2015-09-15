@@ -5,12 +5,11 @@ import org.ucdenver.leesw.ai.ai.collections.MinimaxTreeImpl;
 import org.ucdenver.leesw.ai.ai.impl.ChessMoveGenerator;
 import org.ucdenver.leesw.ai.ai.impl.SimpleChessHeuristic;
 import org.ucdenver.leesw.ai.board.Board;
-import org.ucdenver.leesw.ai.Game;
+import org.ucdenver.leesw.ai.GameLogic;
 import org.ucdenver.leesw.ai.board.impl.ChessBitBoard;
 import org.ucdenver.leesw.ai.ai.collections.MinimaxNode;
 import org.ucdenver.leesw.ai.players.Player;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -40,7 +39,7 @@ public class PlayerAI implements Player {
     public Board getNextMove() {
 
         // Create the root node
-        moveTree = new MinimaxTreeImpl(new ChessBitBoard(Game.getGame().getBoard()));
+        moveTree = new MinimaxTreeImpl(new ChessBitBoard(GameLogic.getGame().getBoard()));
 
         this.generateSubTree(moveTree, MAX_SEARCH_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
 

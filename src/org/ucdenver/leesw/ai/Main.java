@@ -13,21 +13,21 @@ public class Main extends Application {
 
         Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
         primaryStage.setTitle("Chess AI");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setScene(new Scene(root, 800, 600));
         primaryStage.show();
     }
 
 
     public static void main(String[] args) throws Exception {
-        //launch(args);
+        launch(args);
 
         // Print initial state of game
-        System.out.print(Game.getGame().toString() + "\n\n\n\n\n");
-
-        while (!Game.getGame().isOver()) {
-            Game.getGame().takeTurn();
-            System.out.print(Game.getGame().toString() + "\n\n\n");
-            System.out.println("-------------------");
-        }
+//        System.out.print(Game.getGame().toString() + "\n\n\n\n\n");
+//
+//        while (!Game.getGame().isOver()) {
+//            Game.getGame().takeTurn();
+//            System.out.print(Game.getGame().toString() + "\n\n\n");
+//            System.out.println("-------------------");
+//        }
     }
 }
