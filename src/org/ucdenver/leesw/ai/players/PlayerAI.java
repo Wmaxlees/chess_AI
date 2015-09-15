@@ -5,10 +5,7 @@ import org.ucdenver.leesw.ai.Game;
 import org.ucdenver.leesw.ai.Pieces.Color;
 import org.ucdenver.leesw.ai.Pieces.Piece;
 import org.ucdenver.leesw.ai.Tree.BoardNode;
-import org.ucdenver.leesw.ai.ai.ChessMoveGenerator;
-import org.ucdenver.leesw.ai.ai.Move;
-import org.ucdenver.leesw.ai.ai.MoveGenerator;
-import org.ucdenver.leesw.ai.ai.UnknownPieceException;
+import org.ucdenver.leesw.ai.ai.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +15,15 @@ import java.util.Stack;
  * Created by william.lees on 9/10/15.
  */
 public class PlayerAI implements Player {
-    private static final int MAX_SEARCH_DEPTH = 8;
+    // Depth of AI search
+    private static final int MAX_SEARCH_DEPTH = 3;
 
+    // Team
     private Color team;
+
+    // AI Stuff
     private MoveGenerator moveGenerator;
+    private Heurisitic heurisitic;
     private BoardNode moveTree;
 
     private class BoardPair {
@@ -32,6 +34,7 @@ public class PlayerAI implements Player {
     public PlayerAI(Color team) {
         this.team = team;
         this.moveGenerator = new ChessMoveGenerator();
+        this.heurisitic = new SimpleChessHeuristic();
     }
 
     @Override
@@ -66,7 +69,7 @@ public class PlayerAI implements Player {
             for (Board possibility : possibilities) {
                 // Check if we can cut this off
                 if (current.depth == MAX_SEARCH_DEPTH) {
-                    if (possibility.getBoardValue() < minValue) {
+                    if (heurisitic.generateValue(possibility) < minValue) {
                         // System.out.println("Cutoff!!!");
                         break;
                     }
@@ -87,7 +90,7 @@ public class PlayerAI implements Player {
 
                 int minOfLayer = Integer.MAX_VALUE;
                 for (Board possibility : possibilities) {
-                    int boardValue = possibility.getBoardValue();
+                    int boardValue = heurisitic.generateValue(possibility);
                     if (minOfLayer > boardValue)
                         minOfLayer = boardValue;
                 }

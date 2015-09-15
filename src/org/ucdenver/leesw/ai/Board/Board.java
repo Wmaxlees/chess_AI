@@ -3,6 +3,7 @@ package org.ucdenver.leesw.ai.Board;
 import org.ucdenver.leesw.ai.Pieces.Piece;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by william.lees on 9/10/15.
@@ -39,9 +40,6 @@ public class Board {
             }
             result += "\n";
         }
-
-        result += "Board Value: " + this.getBoardValue();
-        result += "\n";
 
         return result;
     }
@@ -97,14 +95,7 @@ public class Board {
         return null;
     }
 
-    // Get the valuation of the board based on our heuristic
-    public int getBoardValue() {
-        int result = 0;
-
-        for (Piece tile : this.tiles) {
-            result += tile.getValue();
-        }
-
-        return result;
+    public List<Piece> getTiles() {
+        return this.tiles;
     }
 }

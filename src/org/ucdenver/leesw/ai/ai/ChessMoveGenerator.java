@@ -117,7 +117,81 @@ public class ChessMoveGenerator implements MoveGenerator {
                 }
             }
         } else if (piece.getClass() == Queen.class) {
+            int newX = piece.getX();
+            while (++newX <= Board.BOARD_WIDTH) {
+                Move move = new Move(newX, piece.getY());
+                move.setStartX(piece.getX());
+                move.setStartY(piece.getY());
+                move.setPiece(piece);
+                moves.add(move);
+            }
 
+            newX = piece.getX();
+            while (--newX >= 1) {
+                Move move = new Move(newX, piece.getY());
+                move.setStartX(piece.getX());
+                move.setStartY(piece.getY());
+                move.setPiece(piece);
+                moves.add(move);
+            }
+
+            int newY = piece.getY();
+            while(++newY <= Board.BOARD_HEIGHT) {
+                Move move = new Move(piece.getX(), newY);
+                move.setStartX(piece.getX());
+                move.setStartY(piece.getY());
+                move.setPiece(piece);
+                moves.add(move);
+            }
+
+            newY = piece.getY();
+            while(--newY >= 1) {
+                Move move = new Move(piece.getX(), newY);
+                move.setStartX(piece.getX());
+                move.setStartY(piece.getY());
+                move.setPiece(piece);
+                moves.add(move);
+            }
+
+            newX = piece.getX();
+            newY = piece.getY();
+            while(++newX <= Board.BOARD_WIDTH && ++newY <= Board.BOARD_HEIGHT) {
+                Move move = new Move(newX, newY);
+                move.setStartX(piece.getX());
+                move.setStartY(piece.getY());
+                move.setPiece(piece);
+                moves.add(move);
+            }
+
+            newX = piece.getX();
+            newY = piece.getY();
+            while(++newX <= Board.BOARD_WIDTH && --newY >= 1) {
+                Move move = new Move(newX, newY);
+                move.setStartX(piece.getX());
+                move.setStartY(piece.getY());
+                move.setPiece(piece);
+                moves.add(move);
+            }
+
+            newX = piece.getX();
+            newY = piece.getY();
+            while(--newX >= 1 && ++newY <= Board.BOARD_HEIGHT) {
+                Move move = new Move(newX, newY);
+                move.setStartX(piece.getX());
+                move.setStartY(piece.getY());
+                move.setPiece(piece);
+                moves.add(move);
+            }
+
+            newX = piece.getX();
+            newY = piece.getY();
+            while(--newX >= 1 && --newY >= 1) {
+                Move move = new Move(newX, newY);
+                move.setStartX(piece.getX());
+                move.setStartY(piece.getY());
+                move.setPiece(piece);
+                moves.add(move);
+            }
         } else {
             throw new UnknownPieceException();
         }

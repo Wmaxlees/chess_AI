@@ -4,6 +4,8 @@ import org.ucdenver.leesw.ai.Board.Board;
 import org.ucdenver.leesw.ai.Pieces.Color;
 import org.ucdenver.leesw.ai.Pieces.King;
 import org.ucdenver.leesw.ai.Pieces.Pawn;
+import org.ucdenver.leesw.ai.ai.Heurisitic;
+import org.ucdenver.leesw.ai.ai.SimpleChessHeuristic;
 import org.ucdenver.leesw.ai.players.Player;
 import org.ucdenver.leesw.ai.players.PlayerAI;
 
@@ -17,7 +19,9 @@ public class Game {
     private Player          playerWhite;
     private Player          playerBlack;
 
-    private static Game _singleton;
+    private Heurisitic      heuristic;
+
+    private static Game     _singleton;
 
     public static Game getGame() {
         if (_singleton == null) {
@@ -61,11 +65,13 @@ public class Game {
         whitePawn.setX(3);
         whitePawn.setY(6);
         currentState.addPiece(whitePawn);
+
+        heuristic = new SimpleChessHeuristic();
     }
 
     @Override
     public String toString() {
-        return currentState.toString();
+        return "Heuristic Value: " + heuristic.generateValue(currentState) + "\n" + currentState.toString();
     }
 
     public boolean isOver() {
