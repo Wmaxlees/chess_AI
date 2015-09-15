@@ -16,7 +16,7 @@ public class Pawn extends Piece {
 
     @Override
     public int getValue() {
-        return (this.color == Color.WHITE ? PIECE_VALUE : -PIECE_VALUE);
+        return PIECE_VALUE;
     }
 
 }

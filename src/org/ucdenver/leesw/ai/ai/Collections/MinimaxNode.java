@@ -1,4 +1,4 @@
-package org.ucdenver.leesw.ai.Tree;
+package org.ucdenver.leesw.ai.ai.Collections;
 
 import org.ucdenver.leesw.ai.Board.Board;
 
@@ -8,21 +8,21 @@ import java.util.List;
 /**
  * Created by william.lees on 9/14/15.
  */
-public class BoardNode {
-    private List<BoardNode> subTree;
-    private BoardNode parent;
+public class MinimaxNode {
+    private List<MinimaxNode> subTree;
+    private MinimaxNode parent;
     private int value;
     private Board data;
 
-    public BoardNode(Board data) {
+    public MinimaxNode(Board data) {
         this.data = data;
     }
 
-    public BoardNode getParent() {
+    public MinimaxNode getParent() {
         return this.parent;
     }
 
-    public void setParent(BoardNode parent) {
+    public void setParent(MinimaxNode parent) {
         this.parent = parent;
     }
 
@@ -30,14 +30,12 @@ public class BoardNode {
         return value;
     }
 
+    // Set this node's value
     public void setValue(int value) {
-        if (parent != null && parent.getValue() < value) {
-            parent.setValue(value);
-        }
         this.value = value;
     }
 
-    public void addNode(BoardNode node) {
+    public void addChild(MinimaxNode node) {
         if (this.subTree == null) {
             this.subTree = new ArrayList<>();
         }
@@ -45,11 +43,16 @@ public class BoardNode {
         this.subTree.add(node);
     }
 
-    public List<BoardNode> getChildren() {
+    public List<MinimaxNode> getChildren() {
         return subTree;
     }
 
     public Board getData() {
         return data;
+    }
+
+    public static void addNode(MinimaxNode child, MinimaxNode parent) {
+        parent.addChild(child);
+        child.setParent(parent);
     }
 }

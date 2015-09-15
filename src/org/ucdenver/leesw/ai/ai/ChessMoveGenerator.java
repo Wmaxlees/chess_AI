@@ -12,10 +12,15 @@ import java.util.List;
 public class ChessMoveGenerator implements MoveGenerator {
 
     @Override
-    public List<Move> generateMoves(int x, int y, Piece piece) throws UnknownPieceException{
+    public List<Move> generateMoves(int x, int y, Piece piece) throws UnknownPieceException {
         ArrayList<Move> moves = new ArrayList<>();
 
+        if (piece == null) {
+            return null;
+        }
+
         if (piece.getClass() == King.class) {
+
             boolean atTop = y == Board.BOARD_HEIGHT;
             boolean atBottom = y == 1;
             boolean atRight = x == Board.BOARD_WIDTH;
@@ -117,78 +122,78 @@ public class ChessMoveGenerator implements MoveGenerator {
                 }
             }
         } else if (piece.getClass() == Queen.class) {
-            int newX = piece.getX();
+            int newX = x;
             while (++newX <= Board.BOARD_WIDTH) {
-                Move move = new Move(newX, piece.getY());
-                move.setStartX(piece.getX());
-                move.setStartY(piece.getY());
+                Move move = new Move(newX, y);
+                move.setStartX(x);
+                move.setStartY(y);
                 move.setPiece(piece);
                 moves.add(move);
             }
 
-            newX = piece.getX();
+            newX = x;
             while (--newX >= 1) {
-                Move move = new Move(newX, piece.getY());
-                move.setStartX(piece.getX());
-                move.setStartY(piece.getY());
+                Move move = new Move(newX, y);
+                move.setStartX(x);
+                move.setStartY(y);
                 move.setPiece(piece);
                 moves.add(move);
             }
 
-            int newY = piece.getY();
+            int newY = y;
             while(++newY <= Board.BOARD_HEIGHT) {
-                Move move = new Move(piece.getX(), newY);
-                move.setStartX(piece.getX());
-                move.setStartY(piece.getY());
+                Move move = new Move(x, newY);
+                move.setStartX(x);
+                move.setStartY(y);
                 move.setPiece(piece);
                 moves.add(move);
             }
 
-            newY = piece.getY();
+            newY = y;
             while(--newY >= 1) {
-                Move move = new Move(piece.getX(), newY);
-                move.setStartX(piece.getX());
-                move.setStartY(piece.getY());
+                Move move = new Move(x, newY);
+                move.setStartX(x);
+                move.setStartY(y);
                 move.setPiece(piece);
                 moves.add(move);
             }
 
-            newX = piece.getX();
-            newY = piece.getY();
+            newX = x;
+            newY = y;
             while(++newX <= Board.BOARD_WIDTH && ++newY <= Board.BOARD_HEIGHT) {
                 Move move = new Move(newX, newY);
-                move.setStartX(piece.getX());
-                move.setStartY(piece.getY());
+                move.setStartX(x);
+                move.setStartY(y);
                 move.setPiece(piece);
                 moves.add(move);
             }
 
-            newX = piece.getX();
-            newY = piece.getY();
+            newX = x;
+            newY = y;
             while(++newX <= Board.BOARD_WIDTH && --newY >= 1) {
                 Move move = new Move(newX, newY);
-                move.setStartX(piece.getX());
-                move.setStartY(piece.getY());
+                move.setStartX(x);
+                move.setStartY(y);
                 move.setPiece(piece);
                 moves.add(move);
             }
 
-            newX = piece.getX();
-            newY = piece.getY();
+            newX = x;
+            newY = y;
             while(--newX >= 1 && ++newY <= Board.BOARD_HEIGHT) {
                 Move move = new Move(newX, newY);
-                move.setStartX(piece.getX());
-                move.setStartY(piece.getY());
+                move.setStartX(x);
+                move.setStartY(y);
                 move.setPiece(piece);
                 moves.add(move);
             }
 
-            newX = piece.getX();
-            newY = piece.getY();
+            newX = x;
+            newY = y;
             while(--newX >= 1 && --newY >= 1) {
                 Move move = new Move(newX, newY);
-                move.setStartX(piece.getX());
-                move.setStartY(piece.getY());
+                move.setStartX(x);
+                move.setStartY(y);
                 move.setPiece(piece);
                 moves.add(move);
             }

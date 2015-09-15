@@ -44,34 +44,26 @@ public class Game {
         // Set initial state of board
         King blackKing = new King();                    // Black King
         blackKing.setColor(Color.BLACK);
-        blackKing.setX(1);
-        blackKing.setY(6);
-        currentState.addPiece(blackKing);
+        currentState.addPiece(1, 6, blackKing);
 
         King whiteKing = new King();                    // White King
         whiteKing.setColor(Color.WHITE);
-        whiteKing.setX(8);
-        whiteKing.setY(8);
-        currentState.addPiece(whiteKing);
+        currentState.addPiece(8, 8, whiteKing);
 
         Pawn blackPawn = new Pawn();                    // Black Pawn
         blackPawn.setColor(Color.BLACK);
-        blackPawn.setX(8);
-        blackPawn.setY(5);
-        currentState.addPiece(blackPawn);
+        currentState.addPiece(8, 5, blackPawn);
 
         Pawn whitePawn = new Pawn();                    // White Pawn
         whitePawn.setColor(Color.WHITE);
-        whitePawn.setX(3);
-        whitePawn.setY(6);
-        currentState.addPiece(whitePawn);
+        currentState.addPiece(3, 6, whitePawn);
 
         heuristic = new SimpleChessHeuristic();
     }
 
     @Override
     public String toString() {
-        return "Heuristic Value: " + heuristic.generateValue(currentState) + "\n" + currentState.toString();
+        return currentState.toString();
     }
 
     public boolean isOver() {
@@ -82,9 +74,11 @@ public class Game {
         if (turn == Color.WHITE) {
             this.currentState = this.playerWhite.getNextMove();
             turn = Color.BLACK;
+            System.out.println("White's Turn");
         } else {
             this.currentState = this.playerBlack.getNextMove();
             turn = Color.WHITE;
+            System.out.println("Black's Turn");
         }
     }
 

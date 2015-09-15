@@ -28,6 +28,7 @@ public class Main extends Application {
 
             Game.getGame().takeTurn();
             System.out.print(Game.getGame().toString() + "\n\n\n");
+            System.in.read();
         }
     }
 }
