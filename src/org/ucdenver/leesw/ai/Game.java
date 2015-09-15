@@ -1,16 +1,17 @@
 package org.ucdenver.leesw.ai;
 
-import org.ucdenver.leesw.ai.board.impl.BoardOld;
+import org.ucdenver.leesw.ai.board.Board;
+import org.ucdenver.leesw.ai.board.impl.ChessBitBoard;
 import org.ucdenver.leesw.ai.pieces.Team;
 import org.ucdenver.leesw.ai.pieces.Piece;
 import org.ucdenver.leesw.ai.players.Player;
-import org.ucdenver.leesw.ai.players.PlayerAI;
+import org.ucdenver.leesw.ai.players.impl.PlayerAI;
 
 /**
  * Created by william.lees on 9/10/15.
  */
 public class Game {
-    private BoardOld currentState;
+    private Board           currentState;
     private boolean         playing;
     private boolean         turn;
 
@@ -61,12 +62,12 @@ public class Game {
         }
     }
 
-    public BoardOld getBoard() {
+    public Board getBoard() {
         return this.currentState;
     }
 
     private void setupGame(GameType gameType) {
-        this.currentState = new BoardOld();
+        this.currentState = new ChessBitBoard();
 
         if (gameType == GameType.PAWN_ONLY) {
             currentState.addPiece(1, 2, Piece.WHITE_PAWN);

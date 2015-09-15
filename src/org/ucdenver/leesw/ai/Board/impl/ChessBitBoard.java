@@ -3,6 +3,7 @@ package org.ucdenver.leesw.ai.board.impl;
 import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.ucdenver.leesw.ai.ai.Move;
 import org.ucdenver.leesw.ai.board.BitBoardLayer;
 import org.ucdenver.leesw.ai.board.Board;
 import org.ucdenver.leesw.ai.board.Coordinates;
@@ -23,6 +24,14 @@ public class ChessBitBoard implements Board {
 
     public ChessBitBoard() {
         layers = new BitBoardLayer[Piece.NO_PIECE];
+    }
+
+    public ChessBitBoard(Board other) {
+        this();
+
+        for (byte i = 0; i < layers.length; ++i) {
+            this.layers[i].setBoard(other.getPiecesOfType(i));
+        }
     }
 
     // Add a piece to the board
@@ -155,5 +164,10 @@ public class ChessBitBoard implements Board {
         }
 
         return this.layers[pieceType].getPopulationCount();
+    }
+
+    @Override
+    public void applyMove(Move move) {
+        this.layers[move.getPiece()].removePiece(move.getStartLocation());
     }
 }

@@ -29,8 +29,18 @@ public class ChessBitBoardLayer implements BitBoardLayer {
     }
 
     @Override
+    public void addPiece(long mask) {
+        this.board |= mask;
+    }
+
+    @Override
     public void removePiece(int x, int y) {
         this.board &= ~this.getMaskOf(x, y);
+    }
+
+    @Override
+    public void removePiece(long mask) {
+        this.board &= ~mask;
     }
 
     @Override

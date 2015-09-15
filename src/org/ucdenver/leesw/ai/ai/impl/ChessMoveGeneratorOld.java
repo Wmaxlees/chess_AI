@@ -11,9 +11,8 @@ import java.util.List;
 /**
  * Created by william.lees on 9/10/15.
  */
-public class ChessMoveGeneratorOld implements MoveGenerator {
+public class ChessMoveGeneratorOld {
 
-    @Override
     public List<MoveOld> generateMoves(int x, int y, byte piece) throws UnknownPieceException {
         ArrayList<MoveOld> moves = new ArrayList<>();
 

@@ -7,15 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by william.lees on 9/14/15.
+ * Created by william.lees on 9/15/15.
  */
-public class MinimaxNode implements MinimaxTree {
+public class MinimaxTreeImpl implements MinimaxTree {
+    private Board initialState;
     private List<MinimaxNode> subTree;
     private int value;
-    private Board data;
 
-    public MinimaxNode(Board data) {
-        this.data = data;
+    public MinimaxTreeImpl(Board data) {
+        this.initialState = data;
     }
 
     @Override
@@ -44,6 +44,6 @@ public class MinimaxNode implements MinimaxTree {
 
     @Override
     public Board getData() {
-        return data;
+        return initialState;
     }
 }

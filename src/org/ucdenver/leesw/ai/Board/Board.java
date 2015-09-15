@@ -1,6 +1,7 @@
 package org.ucdenver.leesw.ai.board;
 
 import javafx.util.Pair;
+import org.ucdenver.leesw.ai.ai.Move;
 import org.ucdenver.leesw.ai.pieces.Piece;
 
 import java.util.ArrayList;
@@ -29,6 +30,9 @@ public interface Board {
     boolean doesPieceExist(long mask);
     boolean doesPieceExist(int x, int y, boolean team);
     boolean doesPieceExist(long mask, boolean team);
+
+    // Apply a move to the board
+    void applyMove(Move move);
 
     void destroy();
 

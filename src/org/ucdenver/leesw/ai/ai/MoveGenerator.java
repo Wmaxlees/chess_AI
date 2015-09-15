@@ -1,7 +1,9 @@
 package org.ucdenver.leesw.ai.ai;
 
 import org.ucdenver.leesw.ai.ai.impl.MoveOld;
+import org.ucdenver.leesw.ai.board.Board;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -9,5 +11,5 @@ import java.util.List;
  */
 public interface MoveGenerator {
 
-    public List<MoveOld> generateMoves(int x, int y, byte piece) throws UnknownPieceException;
+    Collection<Move> generateMoves(Board board, boolean team);
 }

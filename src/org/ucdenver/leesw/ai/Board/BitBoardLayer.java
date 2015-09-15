@@ -6,7 +6,9 @@ package org.ucdenver.leesw.ai.board;
 public interface BitBoardLayer {
 
     void addPiece(int x, int y);
+    void addPiece(long mask);
     void removePiece(int x, int y);
+    void removePiece(long mask);
 
     boolean isPiece(int x, int y);
 

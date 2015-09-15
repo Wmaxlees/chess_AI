@@ -1,6 +1,7 @@
 package org.ucdenver.leesw.ai.ai.impl;
 
 import org.ucdenver.leesw.ai.ai.Move;
+import org.ucdenver.leesw.ai.ai.MoveGenerator;
 import org.ucdenver.leesw.ai.ai.UnknownPieceException;
 import org.ucdenver.leesw.ai.board.BitBoardLayer;
 import org.ucdenver.leesw.ai.board.Board;
@@ -18,7 +19,7 @@ import java.util.Iterator;
 /**
  * Created by william.lees on 9/15/15.
  */
-public class ChessMoveGenerator {
+public class ChessMoveGenerator implements MoveGenerator {
     private static Logger logger = LogManager.getLogger(ChessMoveGenerator.class);
 
     private static final long TOP_LAYER_MASK    = (0b01 << 56) + (0b01 << 57) + (0b01 << 58) + (0b01 << 59) + (0b01 << 60) + (0b01 << 61) + (0b01 << 62) + (0b01 << 63);
@@ -26,18 +27,20 @@ public class ChessMoveGenerator {
     private static final long LEFT_LAYER_MASK   = (0b01 <<  0) + (0b01 <<  8) + (0b01 << 16) + (0b01 << 24) + (0b01 << 32) + (0b01 << 40) + (0b01 << 48) + (0b01 << 56);
     private static final long RIGHT_LAYER_MASK  = (0b01 <<  7) + (0b01 << 15) + (0b01 << 23) + (0b01 << 31) + (0b01 << 39) + (0b01 << 47) + (0b01 << 55) + (0b01 << 63);
 
-    public Collection<Move> generateWhiteMoves(Board board) {
+    @Override
+    public Collection<Move> generateMoves(Board board, boolean team) {
         ArrayList<Move> result = new ArrayList<>();
 
-        // Get white pawn moves
-        Collection<Move> possibleWhitePawnMoves = this.generateAllPawnMoves(board.getPiecesOfType(Piece.WHITE_PAWN), Team.WHITE);
+        // Get pawn moves
+        byte pawnPiece = team ? Piece.BLACK_PAWN : Piece.WHITE_PAWN;
+        Collection<Move> possiblePawnMoves = this.generateAllPawnMoves(board.getPiecesOfType(pawnPiece), team);
 
-        // Process Possible white pawn moves
-        Iterator<Move> iter = possibleWhitePawnMoves.iterator();
+        // Process possible pawn moves
+        Iterator<Move> iter = possiblePawnMoves.iterator();
         while (iter.hasNext()) {
             Move move = iter.next();
             if (move.isCaptureOnly()) {
-                if (board.doesPieceExist(move.getTargetLocation(), Team.BLACK)) {
+                if (board.doesPieceExist(move.getTargetLocation(), !team)) {
                     move.setCapturing(board.getPieceType(move.getTargetLocation()));
                     result.add(move);
                 }
@@ -54,18 +57,19 @@ public class ChessMoveGenerator {
         }
 
         // Get white king moves
-        Collection<Move> possibleWhiteKingMoves = this.generateAllKingMoves(board.getPiecesOfType(Piece.WHITE_KING), Team.WHITE);
+        byte kingPiece = team ? Piece.BLACK_KING : Piece.WHITE_KING;
+        Collection<Move> possibleKingMoves = this.generateAllKingMoves(board.getPiecesOfType(kingPiece), team);
 
         // Process possible white king moves
-        iter = possibleWhiteKingMoves.iterator();
+        iter = possibleKingMoves.iterator();
         while (iter.hasNext()) {
             Move move = iter.next();
 
             // Make sure there is either an enemy piece or an empty square at target
-            if (board.doesPieceExist(move.getTargetLocation(), Team.BLACK)) {
+            if (board.doesPieceExist(move.getTargetLocation(), !team)) {
                 move.setCapturing(board.getPieceType(move.getTargetLocation()));
                 result.add(move);
-            } else if (!board.doesPieceExist(move.getTargetLocation(), Team.WHITE)) {
+            } else if (!board.doesPieceExist(move.getTargetLocation(), team)) {
                 result.add(move);
             }
 
