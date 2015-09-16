@@ -1,17 +1,13 @@
 package org.ucdenver.leesw.ai.board.impl;
 
-import javafx.util.Pair;
+import javafx.scene.control.TreeView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ucdenver.leesw.ai.ai.Move;
 import org.ucdenver.leesw.ai.board.BitBoardLayer;
 import org.ucdenver.leesw.ai.board.Board;
-import org.ucdenver.leesw.ai.board.Coordinates;
 import org.ucdenver.leesw.ai.pieces.Piece;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * Created by william.lees on 9/15/15.
@@ -19,6 +15,8 @@ import java.util.Iterator;
 public class ChessBitBoard implements Board {
 
     private static Logger logger = LogManager.getLogger(ChessBitBoard.class);
+
+    private String description;
 
     private BitBoardLayer[] layers;
 
@@ -31,6 +29,7 @@ public class ChessBitBoard implements Board {
 
         if (other != null) {
             for (byte i = 0; i < layers.length; ++i) {
+                this.layers[i] = new ChessBitBoardLayer();
                 this.layers[i].setBoard(other.getPiecesOfType(i));
             }
         }
@@ -53,9 +52,31 @@ public class ChessBitBoard implements Board {
             layer = new ChessBitBoardLayer();
         }
 
+        logger.info("Adding piece to the board (x: {}, y: {}, {})", x, y, Piece.getSymbol(piece));
         layer.addPiece(x, y);
 
         // Reset to array
+        layers[piece] = layer;
+    }
+
+    @Override
+    public void addPiece(long mask, byte piece) {
+        // Sanity check
+        if (piece > Piece.NO_PIECE) {
+            logger.error("Error: Attempting to add piece of unrecognized type: {}", piece);
+            return;
+        }
+
+        // Get the proper layer
+        BitBoardLayer layer = layers[piece];
+
+        // Initialize layer if needed
+        if (layer == null) {
+            layer = new ChessBitBoardLayer();
+        }
+
+        layer.addPiece(mask);
+
         layers[piece] = layer;
     }
 
@@ -67,13 +88,20 @@ public class ChessBitBoard implements Board {
         }
     }
 
+    @Override
+    public void removePiece(long mask) {
+        for (BitBoardLayer layer : layers) {
+            layer.removePiece(mask);
+        }
+    }
+
     // Get a piece from a specific X, Y coordinate (if any exists)
     @Override
     public byte getPieceType(int x, int y) {
-        for (int i = 0; i < layers.length; ++i) {
+        for (byte i = 0; i < layers.length; ++i) {
             BitBoardLayer layer = layers[i];
             if (layer != null && layer.isPiece(x, y)) {
-                return (byte)i;
+                return i;
             }
         }
 
@@ -82,10 +110,10 @@ public class ChessBitBoard implements Board {
 
     @Override
     public byte getPieceType(long mask) {
-        for (int i = 0; i < layers.length; ++i) {
+        for (byte i = 0; i < layers.length; ++i) {
             BitBoardLayer layer = layers[i];
             if (layer != null && (layer.getBoard() & mask) == mask) {
-                return (byte)i;
+                return i;
             }
         }
 
@@ -116,8 +144,14 @@ public class ChessBitBoard implements Board {
     @Override
     public boolean doesPieceExist(int x, int y, boolean team) {
         BitBoardLayer tempBoard = new ChessBitBoardLayer();
-        for (BitBoardLayer layer : layers) {
-            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layer));
+        if (team) {     // Black
+            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.BLACK_KING]));
+            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.BLACK_PAWN]));
+            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.BLACK_QUEEN]));
+        } else {        // White
+            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.WHITE_KING]));
+            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.WHITE_PAWN]));
+            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.WHITE_QUEEN]));
         }
 
         return tempBoard.isPiece(x, y);
@@ -126,8 +160,14 @@ public class ChessBitBoard implements Board {
     @Override
     public boolean doesPieceExist(long mask, boolean team) {
         BitBoardLayer tempBoard = new ChessBitBoardLayer();
-        for (BitBoardLayer layer : layers) {
-            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layer));
+        if (team) {     // Black
+            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.BLACK_KING]));
+            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.BLACK_PAWN]));
+            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.BLACK_QUEEN]));
+        } else {        // White
+            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.WHITE_KING]));
+            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.WHITE_PAWN]));
+            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.WHITE_QUEEN]));
         }
 
         return (tempBoard.getBoard() & mask) == mask;
@@ -170,11 +210,18 @@ public class ChessBitBoard implements Board {
 
     @Override
     public void applyMove(Move move) {
-        this.layers[move.getPiece()].removePiece(move.getStartLocation());
+        this.description = move.toString();
+
+        this.removePiece(move.getStartLocation());
+        this.addPiece(move.getTargetLocation(), move.getPiece());
+
+        if (move.isCapturing()) {
+            this.layers[move.capturePiece()].removePiece(move.getTargetLocation());
+        }
     }
 
     @Override
-    public String toString() {
-        return "" + this.getPiecesOfType(Piece.WHITE_KING);
+    public String getMoveDescription() {
+        return (description != null) ? description : "N/A";
     }
 }

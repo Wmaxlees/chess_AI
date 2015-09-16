@@ -1,5 +1,10 @@
 package org.ucdenver.leesw.ai.players.impl;
 
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.ucdenver.leesw.ai.ai.*;
 import org.ucdenver.leesw.ai.ai.collections.MinimaxTreeImpl;
 import org.ucdenver.leesw.ai.ai.impl.ChessMoveGenerator;
@@ -9,10 +14,12 @@ import org.ucdenver.leesw.ai.GameLogic;
 import org.ucdenver.leesw.ai.board.impl.ChessBitBoard;
 import org.ucdenver.leesw.ai.ai.collections.MinimaxNode;
 import org.ucdenver.leesw.ai.players.Player;
+import org.ucdenver.leesw.ai.systems.Event;
+import org.ucdenver.leesw.ai.systems.EventManager;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by william.lees on 9/10/15.
@@ -20,6 +27,11 @@ import java.util.List;
 public class PlayerAI implements Player {
     // Depth of AI search
     private static final int MAX_SEARCH_DEPTH = 11;
+
+    private static Logger logger = LogManager.getLogger(PlayerAI.class);
+
+    // Search information
+    private int nodesSearched;
 
     // Team
     private boolean team;
@@ -37,17 +49,28 @@ public class PlayerAI implements Player {
 
     @Override
     public Board getNextMove() {
+        // Clear out any previous data
+        if (moveTree != null) {
+            MinimaxTreeControl.clear(moveTree);
+        }
 
         // Create the root node
         moveTree = new MinimaxTreeImpl(new ChessBitBoard(GameLogic.getGame().getBoard()));
 
+        this.nodesSearched = 0;
         this.generateSubTree(moveTree, MAX_SEARCH_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+
+        // Send message that tree has been generated
+        EventManager eventManager = EventManager.getEventManager();
+        Event treeGeneratedEvent = new Event(Event.EVENT_TYPE_TREE_BUILT);
+        treeGeneratedEvent.setData(moveTree);
+        eventManager.addEvent(treeGeneratedEvent);
 
         List<MinimaxNode> children = moveTree.getChildren();
 
         // Check if there are no more moves
         if (children.size() == 0) {
-            System.out.println("No more possible moves");
+            logger.info("No more possible moves");
             System.exit(0);
         }
 
@@ -60,14 +83,14 @@ public class PlayerAI implements Player {
             }
         }
 
-        // Clear out Hash memory
-        MinimaxTreeControl.clear(moveTree);
-
         // Return resulting board
         return new ChessBitBoard(result.getData());
     }
 
-    private int generateSubTree(MinimaxTree root, int depth, int α, int β, boolean max) {
+    private int generateSubTree(MinimaxTree root, int depth, int α, int β, boolean maximize) {
+        // Increment the nodes searched
+        ++this.nodesSearched;
+
         // Check for base cases
         if (depth == 0) {
             int value = heurisitic.generateValue(root.getData(), this.team);
@@ -76,7 +99,7 @@ public class PlayerAI implements Player {
         }
 
         // Check if we're maximizing on this move
-        if (max) {
+        if (maximize) {
             int value = Integer.MIN_VALUE;
 
             // Generate the child states
@@ -94,11 +117,6 @@ public class PlayerAI implements Player {
 
                 // Check for beta cutoff
                 if (β <= α) {
-                    // Clear the subtree to free space
-                    if (root.getChildren() != null) {
-                        root.getChildren().clear();
-                    }
-
                     break;
                 }
             }
@@ -125,10 +143,6 @@ public class PlayerAI implements Player {
 
                 // Check for alpha cutoff
                 if (β <= α) {
-                    // Clear the subtree to free space
-                    if (root.getChildren() != null) {
-                        root.getChildren().clear();
-                    }
 
                     break;
                 }
@@ -139,12 +153,19 @@ public class PlayerAI implements Player {
         }
     }
 
+    @Override
+    public int getNodesSearched() {
+        return this.nodesSearched;
+    }
+
     private Collection<Board> generateChildStates(Board board, boolean team) {
         ArrayList<Board> result = new ArrayList<>();
 
         // Generate result boards
+        Collection<Move> legalMoves = this.moveGenerator.generateMoves(board, team);
+
         Board possible = null;
-        for (Move legalMove : this.moveGenerator.generateMoves(board, team)) {
+        for (Move legalMove : legalMoves) {
             possible = new ChessBitBoard(board);
             possible.applyMove(legalMove);
             result.add(possible);
@@ -152,4 +173,31 @@ public class PlayerAI implements Player {
 
         return result;
     }
+
+//    @Override
+//    public void generateSearchTreeView(TreeView<MinimaxTree> treeView) {
+//        treeView.setEditable(false);
+//        TreeItem<MinimaxTree> root = new TreeItem<>(moveTree);
+//
+//        Queue<TreeItem<MinimaxTree>> queue = new LinkedBlockingQueue<>();
+//        queue.add(root);
+//        int maxNodes = 200000;
+//        while (queue.size() > 0 && --maxNodes > 0) {
+//            TreeItem<MinimaxTree> item = queue.poll();
+//
+//            if (item.getValue() != null && item.getValue().getChildren() != null) {
+//                for (MinimaxTree child : item.getValue().getChildren()) {
+//                    if (child.getData() == null) {
+//                        continue;
+//                    }
+//                    TreeItem<MinimaxTree> newItem = new TreeItem<>(child);
+//                    item.getChildren().add(newItem);
+//
+//                    queue.add(newItem);
+//                }
+//            }
+//        }
+//
+//        treeView.setRoot(root);
+//    }
 }

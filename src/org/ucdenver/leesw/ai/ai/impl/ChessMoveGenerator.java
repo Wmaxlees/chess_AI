@@ -22,10 +22,10 @@ import java.util.Iterator;
 public class ChessMoveGenerator implements MoveGenerator {
     private static Logger logger = LogManager.getLogger(ChessMoveGenerator.class);
 
-    private static final long TOP_LAYER_MASK    = (0b01 << 56) + (0b01 << 57) + (0b01 << 58) + (0b01 << 59) + (0b01 << 60) + (0b01 << 61) + (0b01 << 62) + (0b01 << 63);
-    private static final long BOTTOM_LAYER_MASK = (0b01 <<  0) + (0b01 <<  1) + (0b01 <<  2) + (0b01 <<  3) + (0b01 <<  4) + (0b01 <<  5) + (0b01 <<  6) + (0b01 <<  7);
-    private static final long LEFT_LAYER_MASK   = (0b01 <<  0) + (0b01 <<  8) + (0b01 << 16) + (0b01 << 24) + (0b01 << 32) + (0b01 << 40) + (0b01 << 48) + (0b01 << 56);
-    private static final long RIGHT_LAYER_MASK  = (0b01 <<  7) + (0b01 << 15) + (0b01 << 23) + (0b01 << 31) + (0b01 << 39) + (0b01 << 47) + (0b01 << 55) + (0b01 << 63);
+    private static final long TOP_LAYER_MASK    = (0b01L << 56) + (0b01L << 57) + (0b01L << 58) + (0b01L << 59) + (0b01L << 60) + (0b01L << 61) + (0b01L << 62) + (0b01L << 63);
+    private static final long BOTTOM_LAYER_MASK = (0b01L <<  0) + (0b01L <<  1) + (0b01L <<  2) + (0b01L <<  3) + (0b01L <<  4) + (0b01L <<  5) + (0b01L <<  6) + (0b01L <<  7);
+    private static final long LEFT_LAYER_MASK   = (0b01L <<  0) + (0b01L <<  8) + (0b01L << 16) + (0b01L << 24) + (0b01L << 32) + (0b01L << 40) + (0b01L << 48) + (0b01L << 56);
+    private static final long RIGHT_LAYER_MASK  = (0b01L <<  7) + (0b01L << 15) + (0b01L << 23) + (0b01L << 31) + (0b01L << 39) + (0b01L << 47) + (0b01L << 55) + (0b01L << 63);
 
     @Override
     public Collection<Move> generateMoves(Board board, boolean team) {
@@ -56,11 +56,11 @@ public class ChessMoveGenerator implements MoveGenerator {
             iter.remove();
         }
 
-        // Get white king moves
+        // Get king moves
         byte kingPiece = team ? Piece.BLACK_KING : Piece.WHITE_KING;
         Collection<Move> possibleKingMoves = this.generateAllKingMoves(board.getPiecesOfType(kingPiece), team);
 
-        // Process possible white king moves
+        // Process possible king moves
         iter = possibleKingMoves.iterator();
         while (iter.hasNext()) {
             Move move = iter.next();
@@ -83,7 +83,7 @@ public class ChessMoveGenerator implements MoveGenerator {
         ArrayList<Move> results = new ArrayList<>();
 
         // Check if there are any pieces to generate moves
-        if (startState == 0b00) {
+        if (startState == 0b00L) {
             return results;
         }
 
@@ -94,59 +94,106 @@ public class ChessMoveGenerator implements MoveGenerator {
         if (team == Team.WHITE) {
             Move move = null;
             for (long piece : pieces) {
-                // Move the piece forward one piece
-                move = new ChessMove();
-                move.setStartLocation(piece);
-                move.setTargetLocation(piece << 8);
-                move.setPiece(Piece.WHITE_PAWN);
-                move.setFreeSpaceOnly();
-                results.add(move);
 
-                // Move the piece forward and to the left
-                move = new ChessMove();
-                move.setStartLocation(piece);
-                move.setTargetLocation(piece << 9);
-                move.setPiece(Piece.WHITE_PAWN);
-                move.setCaptureOnly();
-                results.add(move);
+                if ((piece & TOP_LAYER_MASK) == 0b00L) {
+                    // Move the piece forward one piece
+                    move = new ChessMove();
+                    move.setStartLocation(piece);
+                    move.setTargetLocation(piece << 8);
+                    move.setPiece(Piece.WHITE_PAWN);
+                    move.setFreeSpaceOnly();
 
-                // Move the piece forward and to the right
-                move = new ChessMove();
-                move.setStartLocation(piece);
-                move.setTargetLocation(piece << 7);
-                move.setPiece(Piece.WHITE_PAWN);
-                move.setCaptureOnly();
-                results.add(move);
+                    // Check if the pawn should be queened
+                    if ((move.getTargetLocation() & TOP_LAYER_MASK) != 0) {
+                        move.setPiece(Piece.WHITE_QUEEN);
+                    }
+
+                    results.add(move);
+
+                    // Move the piece forward and to the left
+                    if ((piece & LEFT_LAYER_MASK) == 0b00L) {
+                        move = new ChessMove();
+                        move.setStartLocation(piece);
+                        move.setTargetLocation(piece << 7);
+                        move.setPiece(Piece.WHITE_PAWN);
+                        move.setCaptureOnly();
+
+                        // Check if the pawn should be queened
+                        if ((move.getTargetLocation() & TOP_LAYER_MASK) != 0) {
+                            move.setPiece(Piece.WHITE_QUEEN);
+                        }
+
+                        results.add(move);
+                    }
+
+                    // Move the piece forward and to the right
+                    if ((piece & RIGHT_LAYER_MASK) == 0b00L) {
+                        move = new ChessMove();
+                        move.setStartLocation(piece);
+                        move.setTargetLocation(piece << 9);
+                        move.setPiece(Piece.WHITE_PAWN);
+                        move.setCaptureOnly();
+
+                        // Check if the pawn should be queened
+                        if ((move.getTargetLocation() & TOP_LAYER_MASK) != 0) {
+                            move.setPiece(Piece.WHITE_QUEEN);
+                        }
+
+                        results.add(move);
+                    }
+                }
             }
         } else {
             Move move = null;
             for (long piece : pieces) {
-                // Move the piece back one piece
-                move = new ChessMove();
-                move.setStartLocation(piece);
-                move.setTargetLocation(piece >> 8);
-                move.setPiece(Piece.WHITE_PAWN);
-                move.setFreeSpaceOnly();
-                results.add(move);
+                if ((piece & BOTTOM_LAYER_MASK) == 0b00L) {
+                    // Move the piece back one piece
+                    move = new ChessMove();
+                    move.setStartLocation(piece);
+                    move.setTargetLocation(piece >>> 8);
+                    move.setPiece(Piece.BLACK_PAWN);
+                    move.setFreeSpaceOnly();
+                    results.add(move);
 
-                // Move the piece back and to the right
-                move = new ChessMove();
-                move.setStartLocation(piece);
-                move.setTargetLocation(piece >> 9);
-                move.setPiece(Piece.WHITE_PAWN);
-                move.setCaptureOnly();
-                results.add(move);
+                    // Check if the pawn should be queened
+                    if ((move.getTargetLocation() & BOTTOM_LAYER_MASK) != 0) {
+                        move.setPiece(Piece.BLACK_QUEEN);
+                    }
 
-                // Move the piece back and to the left
-                move = new ChessMove();
-                move.setStartLocation(piece);
-                move.setTargetLocation(piece >> 7);
-                move.setPiece(Piece.WHITE_PAWN);
-                move.setCaptureOnly();
-                results.add(move);
+                    // Move the piece back and to the right
+                    if ((piece & RIGHT_LAYER_MASK) == 0b00L) {
+                        move = new ChessMove();
+                        move.setStartLocation(piece);
+                        move.setTargetLocation(piece >>> 7);
+                        move.setPiece(Piece.BLACK_PAWN);
+                        move.setCaptureOnly();
+
+                        // Check if the pawn should be queened
+                        if ((move.getTargetLocation() & BOTTOM_LAYER_MASK) != 0) {
+                            move.setPiece(Piece.BLACK_QUEEN);
+                        }
+
+                        results.add(move);
+                    }
+
+                    // Move the piece back and to the left
+                    if ((piece & LEFT_LAYER_MASK) == 0b00L) {
+                        move = new ChessMove();
+                        move.setStartLocation(piece);
+                        move.setTargetLocation(piece >>> 9);
+                        move.setPiece(Piece.BLACK_PAWN);
+                        move.setCaptureOnly();
+
+                        // Check if the pawn should be queened
+                        if ((move.getTargetLocation() & BOTTOM_LAYER_MASK) != 0) {
+                            move.setPiece(Piece.BLACK_QUEEN);
+                        }
+
+                        results.add(move);
+                    }
+                }
             }
         }
-
 
         return results;
     }
@@ -175,13 +222,12 @@ public class ChessMoveGenerator implements MoveGenerator {
         // Generate the moves
         Move move = null;
         byte piece = team ? Piece.BLACK_KING : Piece.WHITE_KING;
-        long startLocation = pieces.get(1);
-        long targetLocation;
+        long startLocation = pieces.get(0);
 
-        boolean atTop = (startLocation & TOP_LAYER_MASK) != 0b00;
-        boolean atBottom = (startLocation & BOTTOM_LAYER_MASK) != 0b00;
-        boolean atLeft = (startLocation & LEFT_LAYER_MASK) != 0b00;
-        boolean atRight = (startLocation & RIGHT_LAYER_MASK) != 0b00;
+        boolean atTop = (startLocation & TOP_LAYER_MASK) != 0b00L;
+        boolean atBottom = (startLocation & BOTTOM_LAYER_MASK) != 0b00L;
+        boolean atLeft = (startLocation & LEFT_LAYER_MASK) != 0b00L;
+        boolean atRight = (startLocation & RIGHT_LAYER_MASK) != 0b00L;
 
         // North one move
         if (!atTop) {
@@ -191,6 +237,7 @@ public class ChessMoveGenerator implements MoveGenerator {
             move.setTargetLocation(startLocation << 8);
             results.add(move);
 
+            // North West
             if (!atLeft) {
                 move = new ChessMove();
                 move.setStartLocation(startLocation);
@@ -199,6 +246,7 @@ public class ChessMoveGenerator implements MoveGenerator {
                 results.add(move);
             }
 
+            // North East
             if (!atRight) {
                 move = new ChessMove();
                 move.setStartLocation(startLocation);
@@ -213,7 +261,7 @@ public class ChessMoveGenerator implements MoveGenerator {
             move = new ChessMove();
             move.setStartLocation(startLocation);
             move.setPiece(piece);
-            move.setTargetLocation(startLocation >> 1);
+            move.setTargetLocation(startLocation >>> 1);
             results.add(move);
         }
 
@@ -231,14 +279,14 @@ public class ChessMoveGenerator implements MoveGenerator {
             move = new ChessMove();
             move.setStartLocation(startLocation);
             move.setPiece(piece);
-            move.setTargetLocation(startLocation >> 8);
+            move.setTargetLocation(startLocation >>> 8);
             results.add(move);
 
             if (!atLeft) {
                 move = new ChessMove();
                 move.setStartLocation(startLocation);
                 move.setPiece(piece);
-                move.setTargetLocation(startLocation >> 9);
+                move.setTargetLocation(startLocation >>> 9);
                 results.add(move);
             }
 
@@ -246,10 +294,26 @@ public class ChessMoveGenerator implements MoveGenerator {
                 move = new ChessMove();
                 move.setStartLocation(startLocation);
                 move.setPiece(piece);
-                move.setTargetLocation(startLocation >> 7);
+                move.setTargetLocation(startLocation >>> 7);
                 results.add(move);
             }
         }
+
+        return results;
+    }
+
+    private Collection<Move> generateAllQueenMoves(long startState, boolean team) {
+        ArrayList<Move> results = new ArrayList<>();
+
+        // Check if there are any pieces to generate moves
+        if (startState == 0b00) {
+            return results;
+        }
+
+        // Generate the individual pieces
+        ArrayList<Long> pieces = this.splitOutPieces(startState);
+
+
 
         return results;
     }
@@ -258,9 +322,9 @@ public class ChessMoveGenerator implements MoveGenerator {
         ArrayList<Long> pieces = new ArrayList<>();
 
         // Split out pieces
-        for (int i = 0; i < 64; ++i) {
-            long temp = state & (1 << i);
-            if (temp != 0) {
+        for (long i = 0L; i < 64L; ++i) {
+            long temp = state & (0b01L << i);
+            if (temp != 0L) {
                 pieces.add(temp);
             }
         }

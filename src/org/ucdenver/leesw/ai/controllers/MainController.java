@@ -1,12 +1,37 @@
-package org.ucdenver.leesw.ai;
+package org.ucdenver.leesw.ai.controllers;
 
+import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeView;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.ucdenver.leesw.ai.GameLogic;
+import org.ucdenver.leesw.ai.ai.Heurisitic;
+import org.ucdenver.leesw.ai.ai.MinimaxTree;
+import org.ucdenver.leesw.ai.ai.impl.SimpleChessHeuristic;
 import org.ucdenver.leesw.ai.pieces.Piece;
+import org.ucdenver.leesw.ai.pieces.Team;
+import org.ucdenver.leesw.ai.systems.Event;
+import org.ucdenver.leesw.ai.systems.EventManager;
 
-public class Controller {
+public class MainController {
+    private static Logger logger = LogManager.getLogger(MainController.class);
+
+    private Thread logicThread;
+
+    TreeController treeController;
+
+    @FXML
+    private TextField movesConsideredText;
+    @FXML
+    private TextField currentValueText;
+
+    @FXML
+    private TreeView<MinimaxTree> searchTreeView;
+
     @FXML
     private TextField tile11;
     @FXML
@@ -146,7 +171,64 @@ public class Controller {
     @FXML
     private Button nextButton;
 
+    @FXML
+    public void initialize() {
+        // Initialize the tree controller
+        this.treeController = new TreeController();
+        this.treeController.setDepth(3);
+        EventManager.getEventManager().addEventListener(treeController, Event.EVENT_TYPE_TREE_BUILT);
+
+        AnimationTimer updateTimer = new AnimationTimer() {
+            public void handle(long ms) {
+                // Update game board
+                updateBoard();
+                treeController.updateTree(searchTreeView);
+                EventManager.getEventManager().processEvents();
+
+                // Check state of thread
+                if (logicThread != null && logicThread.getState() == Thread.State.TERMINATED) {
+                    Heurisitic heurisitic = new SimpleChessHeuristic();
+                    movesConsideredText.setText(((Integer) GameLogic.getGame().getNodesSearchedLastMove()).toString());
+
+//                    GameLogic.getGame().generateTreeFromLastMove(searchTreeView);
+
+                    currentValueText.setText(((Integer) heurisitic.generateValue(GameLogic.getGame().getBoard(), Team.WHITE)).toString());
+
+                    logger.info("Completed Search");
+                    try {
+                        logicThread.join();
+                        logicThread = null;
+                    } catch (Exception e) {
+                        logger.error("ERROR: Could not join logic thread: {}", e);
+                    }
+                }
+            }
+        };
+
+        updateTimer.start();
+    }
+
     public void nextPressed(ActionEvent ae) {
+        if (this.logicThread == null) {
+            this.logicThread = new Thread(GameLogic.getGame(), "LogicThread");
+            this.logicThread.start();
+            logger.info("Search started...");
+        } else {
+            logger.info("Search still running...");
+        }
+    }
+
+    private String generateToken(int x, int y) {
+        byte piece = GameLogic.getGame().getBoard().getPieceType(x, y);
+
+        if (piece == Byte.MAX_VALUE) {
+            return "";
+        }
+
+        return Piece.getSymbol(piece);
+    }
+
+    private void updateBoard() {
         this.tile11.setText(generateToken(1, 1));
         this.tile12.setText(generateToken(1, 2));
         this.tile13.setText(generateToken(1, 3));
@@ -218,12 +300,5 @@ public class Controller {
         this.tile86.setText(generateToken(8, 6));
         this.tile87.setText(generateToken(8, 7));
         this.tile88.setText(generateToken(8, 8));
-
-        //(new Thread(GameLogic.getGame())).run();
-    }
-
-    private String generateToken(int x, int y) {
-        byte piece = GameLogic.getGame().getBoard().getPieceType(x, y);
-        return Piece.getSymbol(piece);
     }
 }

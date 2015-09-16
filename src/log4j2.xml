@@ -6,10 +6,19 @@
                 <Pattern>%d{ABSOLUTE} %5p %c{1} - %m%n</Pattern>
             </PatternLayout>
         </Console>
+        <File name="chessAILog" fileName="chessAI.log">
+            <PatternLayout>
+                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+            </PatternLayout>
+        </File>
+        <Async name="AsyncFileLogger">
+            <AppenderRef ref="chessAILog"/>
+        </Async>
     </Appenders>
     <Loggers>
         <Root level="INFO">
             <AppenderRef ref="STDOUT" />
+            <AppenderRef ref="AsyncFileLogger" />
         </Root>
     </Loggers>
 </Configuration>

@@ -8,8 +8,9 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 
-<GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ucdenver.leesw.ai.Controller">
+<GridPane alignment="center" hgap="10" prefHeight="788.0" prefWidth="1215.0" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ucdenver.leesw.ai.controllers.MainController">
    <columnConstraints>
+      <ColumnConstraints />
       <ColumnConstraints />
    </columnConstraints>
    <rowConstraints>
@@ -17,78 +18,85 @@
       <RowConstraints />
    </rowConstraints>
    <children>
-      <SplitPane dividerPositions="0.5" prefHeight="600.0" prefWidth="780.0">
+      <SplitPane dividerPositions="0.24522028262676643" prefHeight="880.0" prefWidth="1205.0" GridPane.columnIndex="1">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <TextField id="tile11" fx:id="tile11" editable="false" layoutX="73.0" layoutY="389.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile12" fx:id="tile12" editable="false" layoutX="103.0" layoutY="389.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile13" fx:id="tile13" editable="false" layoutX="133.0" layoutY="389.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile16" fx:id="tile16" editable="false" layoutX="223.0" layoutY="389.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile15" fx:id="tile15" editable="false" layoutX="193.0" layoutY="389.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile14" fx:id="tile14" editable="false" layoutX="163.0" layoutY="389.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile16" fx:id="tile17" editable="false" layoutX="253.0" layoutY="389.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile17" fx:id="tile18" editable="false" layoutX="283.0" layoutY="389.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile27" fx:id="tile28" editable="false" layoutX="283.0" layoutY="359.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile26" fx:id="tile27" editable="false" layoutX="253.0" layoutY="359.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile24" fx:id="tile24" editable="false" layoutX="163.0" layoutY="359.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile25" fx:id="tile25" editable="false" layoutX="193.0" layoutY="359.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile26" fx:id="tile26" editable="false" layoutX="223.0" layoutY="359.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile23" fx:id="tile23" editable="false" layoutX="133.0" layoutY="359.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile22" fx:id="tile22" editable="false" layoutX="103.0" layoutY="359.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile21" fx:id="tile21" editable="false" layoutX="73.0" layoutY="359.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile41" fx:id="tile41" editable="false" layoutX="73.0" layoutY="299.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile42" fx:id="tile42" editable="false" layoutX="103.0" layoutY="299.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile43" fx:id="tile43" editable="false" layoutX="133.0" layoutY="299.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile46" fx:id="tile46" editable="false" layoutX="223.0" layoutY="299.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile45" fx:id="tile45" editable="false" layoutX="193.0" layoutY="299.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile44" fx:id="tile44" editable="false" layoutX="163.0" layoutY="299.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile46" fx:id="tile47" editable="false" layoutX="253.0" layoutY="299.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile47" fx:id="tile48" editable="false" layoutX="283.0" layoutY="299.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile37" fx:id="tile38" editable="false" layoutX="283.0" layoutY="329.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile36" fx:id="tile37" editable="false" layoutX="253.0" layoutY="329.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile34" fx:id="tile34" editable="false" layoutX="163.0" layoutY="329.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile35" fx:id="tile35" editable="false" layoutX="193.0" layoutY="329.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile36" fx:id="tile36" editable="false" layoutX="223.0" layoutY="329.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile33" fx:id="tile33" editable="false" layoutX="133.0" layoutY="329.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile32" fx:id="tile32" editable="false" layoutX="103.0" layoutY="329.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile31" fx:id="tile31" editable="false" layoutX="73.0" layoutY="329.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile71" fx:id="tile71" editable="false" layoutX="73.0" layoutY="209.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile72" fx:id="tile72" editable="false" layoutX="103.0" layoutY="209.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile73" fx:id="tile73" editable="false" layoutX="133.0" layoutY="209.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile76" fx:id="tile76" editable="false" layoutX="223.0" layoutY="209.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile75" fx:id="tile75" editable="false" layoutX="193.0" layoutY="209.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile74" fx:id="tile74" editable="false" layoutX="163.0" layoutY="209.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile76" fx:id="tile77" editable="false" layoutX="253.0" layoutY="209.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile77" fx:id="tile78" editable="false" layoutX="283.0" layoutY="209.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile87" fx:id="tile88" editable="false" layoutX="283.0" layoutY="179.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile86" fx:id="tile87" editable="false" layoutX="253.0" layoutY="179.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile84" fx:id="tile84" editable="false" layoutX="163.0" layoutY="179.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile85" fx:id="tile85" editable="false" layoutX="193.0" layoutY="179.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile86" fx:id="tile86" editable="false" layoutX="223.0" layoutY="179.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile83" fx:id="tile83" editable="false" layoutX="133.0" layoutY="179.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile82" fx:id="tile82" editable="false" layoutX="103.0" layoutY="179.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile81" fx:id="tile81" editable="false" layoutX="73.0" layoutY="179.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile61" fx:id="tile61" editable="false" layoutX="73.0" layoutY="239.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile62" fx:id="tile62" editable="false" layoutX="103.0" layoutY="239.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile63" fx:id="tile63" editable="false" layoutX="133.0" layoutY="239.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile66" fx:id="tile66" editable="false" layoutX="223.0" layoutY="239.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile65" fx:id="tile65" editable="false" layoutX="193.0" layoutY="239.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile64" fx:id="tile64" editable="false" layoutX="163.0" layoutY="239.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile66" fx:id="tile67" editable="false" layoutX="253.0" layoutY="239.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile67" fx:id="tile68" editable="false" layoutX="283.0" layoutY="239.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile57" fx:id="tile58" editable="false" layoutX="283.0" layoutY="269.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile56" fx:id="tile57" editable="false" layoutX="253.0" layoutY="269.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile54" fx:id="tile54" editable="false" layoutX="163.0" layoutY="269.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile55" fx:id="tile55" editable="false" layoutX="193.0" layoutY="269.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile56" fx:id="tile56" editable="false" layoutX="223.0" layoutY="269.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile53" fx:id="tile53" editable="false" layoutX="133.0" layoutY="269.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile52" fx:id="tile52" editable="false" layoutX="103.0" layoutY="269.0" prefHeight="30.0" prefWidth="30.0" />
-                  <TextField id="tile51" fx:id="tile51" editable="false" layoutX="73.0" layoutY="269.0" prefHeight="30.0" prefWidth="30.0" />
-                  <Button fx:id="nextButton" layoutX="170.0" layoutY="523.0" mnemonicParsing="false" onAction="#nextPressed" text="Next" />
+                  <TextField id="tile11" fx:id="tile11" editable="false" layoutX="27.0" layoutY="264.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile12" fx:id="tile12" editable="false" layoutX="57.0" layoutY="264.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile13" fx:id="tile13" editable="false" layoutX="87.0" layoutY="264.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile16" fx:id="tile16" editable="false" layoutX="177.0" layoutY="264.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile15" fx:id="tile15" editable="false" layoutX="147.0" layoutY="264.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile14" fx:id="tile14" editable="false" layoutX="117.0" layoutY="264.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile16" fx:id="tile17" editable="false" layoutX="207.0" layoutY="264.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile17" fx:id="tile18" editable="false" layoutX="237.0" layoutY="264.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile27" fx:id="tile28" editable="false" layoutX="237.0" layoutY="234.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile26" fx:id="tile27" editable="false" layoutX="207.0" layoutY="234.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile24" fx:id="tile24" editable="false" layoutX="117.0" layoutY="234.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile25" fx:id="tile25" editable="false" layoutX="147.0" layoutY="234.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile26" fx:id="tile26" editable="false" layoutX="177.0" layoutY="234.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile23" fx:id="tile23" editable="false" layoutX="87.0" layoutY="234.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile22" fx:id="tile22" editable="false" layoutX="57.0" layoutY="234.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile21" fx:id="tile21" editable="false" layoutX="27.0" layoutY="234.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile41" fx:id="tile41" editable="false" layoutX="27.0" layoutY="174.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile42" fx:id="tile42" editable="false" layoutX="57.0" layoutY="174.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile43" fx:id="tile43" editable="false" layoutX="87.0" layoutY="174.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile46" fx:id="tile46" editable="false" layoutX="177.0" layoutY="174.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile45" fx:id="tile45" editable="false" layoutX="147.0" layoutY="174.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile44" fx:id="tile44" editable="false" layoutX="117.0" layoutY="174.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile46" fx:id="tile47" editable="false" layoutX="207.0" layoutY="174.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile47" fx:id="tile48" editable="false" layoutX="237.0" layoutY="174.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile37" fx:id="tile38" editable="false" layoutX="237.0" layoutY="204.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile36" fx:id="tile37" editable="false" layoutX="207.0" layoutY="204.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile34" fx:id="tile34" editable="false" layoutX="117.0" layoutY="204.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile35" fx:id="tile35" editable="false" layoutX="147.0" layoutY="204.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile36" fx:id="tile36" editable="false" layoutX="177.0" layoutY="204.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile33" fx:id="tile33" editable="false" layoutX="87.0" layoutY="204.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile32" fx:id="tile32" editable="false" layoutX="57.0" layoutY="204.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile31" fx:id="tile31" editable="false" layoutX="27.0" layoutY="204.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile71" fx:id="tile71" editable="false" layoutX="27.0" layoutY="84.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile72" fx:id="tile72" editable="false" layoutX="57.0" layoutY="84.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile73" fx:id="tile73" editable="false" layoutX="87.0" layoutY="84.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile76" fx:id="tile76" editable="false" layoutX="177.0" layoutY="84.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile75" fx:id="tile75" editable="false" layoutX="147.0" layoutY="84.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile74" fx:id="tile74" editable="false" layoutX="117.0" layoutY="84.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile76" fx:id="tile77" editable="false" layoutX="207.0" layoutY="84.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile77" fx:id="tile78" editable="false" layoutX="237.0" layoutY="84.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile87" fx:id="tile88" editable="false" layoutX="237.0" layoutY="54.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile86" fx:id="tile87" editable="false" layoutX="207.0" layoutY="54.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile84" fx:id="tile84" editable="false" layoutX="117.0" layoutY="54.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile85" fx:id="tile85" editable="false" layoutX="147.0" layoutY="54.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile86" fx:id="tile86" editable="false" layoutX="177.0" layoutY="54.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile83" fx:id="tile83" editable="false" layoutX="87.0" layoutY="54.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile82" fx:id="tile82" editable="false" layoutX="57.0" layoutY="54.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile81" fx:id="tile81" editable="false" layoutX="27.0" layoutY="54.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile61" fx:id="tile61" editable="false" layoutX="27.0" layoutY="114.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile62" fx:id="tile62" editable="false" layoutX="57.0" layoutY="114.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile63" fx:id="tile63" editable="false" layoutX="87.0" layoutY="114.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile66" fx:id="tile66" editable="false" layoutX="177.0" layoutY="114.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile65" fx:id="tile65" editable="false" layoutX="147.0" layoutY="114.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile64" fx:id="tile64" editable="false" layoutX="117.0" layoutY="114.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile66" fx:id="tile67" editable="false" layoutX="207.0" layoutY="114.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile67" fx:id="tile68" editable="false" layoutX="237.0" layoutY="114.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile57" fx:id="tile58" editable="false" layoutX="237.0" layoutY="144.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile56" fx:id="tile57" editable="false" layoutX="207.0" layoutY="144.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile54" fx:id="tile54" editable="false" layoutX="117.0" layoutY="144.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile55" fx:id="tile55" editable="false" layoutX="147.0" layoutY="144.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile56" fx:id="tile56" editable="false" layoutX="177.0" layoutY="144.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile53" fx:id="tile53" editable="false" layoutX="87.0" layoutY="144.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile52" fx:id="tile52" editable="false" layoutX="57.0" layoutY="144.0" prefHeight="30.0" prefWidth="30.0" />
+                  <TextField id="tile51" fx:id="tile51" editable="false" layoutX="27.0" layoutY="144.0" prefHeight="30.0" prefWidth="30.0" />
+                  <Button fx:id="nextButton" layoutX="109.0" layoutY="379.0" mnemonicParsing="false" onAction="#nextPressed" prefHeight="73.0" prefWidth="76.0" text="Next" />
                </children>
             </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="158.0" prefWidth="421.0" />
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="677.0" prefWidth="616.0">
+               <children>
+                  <Label layoutX="14.0" layoutY="19.0" text="Moves Considered:" />
+                  <TextField fx:id="movesConsideredText" layoutX="135.0" layoutY="14.0" />
+                  <TextField fx:id="currentValueText" layoutX="135.0" layoutY="40.0" />
+                  <Label layoutX="45.0" layoutY="45.0" text="Current Value:" />
+                  <TreeView fx:id="searchTreeView" layoutY="77.0" prefHeight="788.0" prefWidth="904.0" />
+               </children></AnchorPane>
         </items>
       </SplitPane>
    </children>

@@ -1,28 +1,34 @@
 package org.ucdenver.leesw.ai.board.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.ucdenver.leesw.ai.board.BitBoardLayer;
 
 /**
  * Created by william.lees on 9/15/15.
  */
 public class ChessBitBoardLayer implements BitBoardLayer {
+
+    private static Logger logger = LogManager.getLogger(ChessBitBoardLayer.class);
+
     private static final long[/*x*/][/*y*/] MASK =
             {
-                    {0b01 <<  0, 0b01 <<  1, 0b01 <<  2, 0b01 <<  3, 0b01 <<  4, 0b01 <<  5, 0b01 <<  6, 0b01 <<  7},
-                    {0b01 <<  8, 0b01 <<  9, 0b01 << 10, 0b01 << 11, 0b01 << 12, 0b01 << 13, 0b01 << 14, 0b01 << 15},
-                    {0b01 << 16, 0b01 << 17, 0b01 << 18, 0b01 << 19, 0b01 << 20, 0b01 << 21, 0b01 << 22, 0b01 << 23},
-                    {0b01 << 24, 0b01 << 25, 0b01 << 26, 0b01 << 27, 0b01 << 28, 0b01 << 29, 0b01 << 30, 0b01 << 31},
-                    {0b01 << 32, 0b01 << 33, 0b01 << 34, 0b01 << 35, 0b01 << 36, 0b01 << 37, 0b01 << 38, 0b01 << 39},
-                    {0b01 << 40, 0b01 << 41, 0b01 << 42, 0b01 << 43, 0b01 << 44, 0b01 << 45, 0b01 << 46, 0b01 << 47},
-                    {0b01 << 48, 0b01 << 49, 0b01 << 50, 0b01 << 51, 0b01 << 52, 0b01 << 53, 0b01 << 54, 0b01 << 55},
-                    {0b01 << 56, 0b01 << 57, 0b01 << 58, 0b01 << 59, 0b01 << 60, 0b01 << 61, 0b01 << 62, 0b01 << 63}
+                    {0b01L <<  0, 0b01L <<  1, 0b01L <<  2, 0b01L <<  3, 0b01L <<  4, 0b01L <<  5, 0b01L <<  6, 0b01L <<  7},
+                    {0b01L <<  8, 0b01L <<  9, 0b01L << 10, 0b01L << 11, 0b01L << 12, 0b01L << 13, 0b01L << 14, 0b01L << 15},
+                    {0b01L << 16, 0b01L << 17, 0b01L << 18, 0b01L << 19, 0b01L << 20, 0b01L << 21, 0b01L << 22, 0b01L << 23},
+                    {0b01L << 24, 0b01L << 25, 0b01L << 26, 0b01L << 27, 0b01L << 28, 0b01L << 29, 0b01L << 30, 0b01L << 31},
+                    {0b01L << 32, 0b01L << 33, 0b01L << 34, 0b01L << 35, 0b01L << 36, 0b01L << 37, 0b01L << 38, 0b01L << 39},
+                    {0b01L << 40, 0b01L << 41, 0b01L << 42, 0b01L << 43, 0b01L << 44, 0b01L << 45, 0b01L << 46, 0b01L << 47},
+                    {0b01L << 48, 0b01L << 49, 0b01L << 50, 0b01L << 51, 0b01L << 52, 0b01L << 53, 0b01L << 54, 0b01L << 55},
+                    {0b01L << 56, 0b01L << 57, 0b01L << 58, 0b01L << 59, 0b01L << 60, 0b01L << 61, 0b01L << 62, 0b01L << 63}
             };
 
     private long board;
 
     @Override
     public void addPiece(int x, int y) {
-        this.board |= getMaskOf(x, y);
+        long mask = getMaskOf(x, y);
+        this.board |= mask;
     }
 
     @Override
@@ -67,10 +73,6 @@ public class ChessBitBoardLayer implements BitBoardLayer {
         }
 
         return pop;
-    }
-
-    private int getIndex(int y) {
-        return y;
     }
 
     private static long getMaskOf(int x, int y) {

@@ -1,5 +1,6 @@
 package org.ucdenver.leesw.ai.board;
 
+import javafx.scene.control.TreeView;
 import javafx.util.Pair;
 import org.ucdenver.leesw.ai.ai.Move;
 import org.ucdenver.leesw.ai.pieces.Piece;
@@ -14,9 +15,11 @@ import java.util.Iterator;
 public interface Board {
     // Add a piece to the board
     void addPiece(int x, int y, byte piece);
+    public void addPiece(long mask, byte piece);
 
     // Remove a piece from a specific spot on the board
     void removePiece(int x, int y);
+    public void removePiece(long mask);
 
     // Get a piece type from a specific X, Y coordinate (if any exists)
     byte getPieceType(int x, int y);
@@ -33,6 +36,9 @@ public interface Board {
 
     // Apply a move to the board
     void applyMove(Move move);
+
+    // Get the description of the move
+    String getMoveDescription();
 
     void destroy();
 

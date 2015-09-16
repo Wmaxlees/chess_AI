@@ -46,4 +46,9 @@ public class MinimaxTreeImpl implements MinimaxTree {
     public Board getData() {
         return initialState;
     }
+
+    @Override
+    public String toString() {
+        return "Initial State = " + this.value;
+    }
 }

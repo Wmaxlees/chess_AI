@@ -1,6 +1,7 @@
 package org.ucdenver.leesw.ai.ai.collections;
 
 import org.ucdenver.leesw.ai.ai.MinimaxTree;
+import org.ucdenver.leesw.ai.ai.Move;
 import org.ucdenver.leesw.ai.board.Board;
 
 import java.util.ArrayList;
@@ -45,5 +46,10 @@ public class MinimaxNode implements MinimaxTree {
     @Override
     public Board getData() {
         return data;
+    }
+
+    @Override
+    public String toString() {
+        return this.data.getMoveDescription() + " = " + this.value;
     }
 }

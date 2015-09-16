@@ -1,5 +1,7 @@
 package org.ucdenver.leesw.ai;
 
+import javafx.scene.control.TreeView;
+import org.ucdenver.leesw.ai.ai.MinimaxTree;
 import org.ucdenver.leesw.ai.board.Board;
 import org.ucdenver.leesw.ai.board.impl.ChessBitBoard;
 import org.ucdenver.leesw.ai.pieces.Team;
@@ -54,13 +56,31 @@ public class GameLogic implements Runnable {
         if (turn == Team.WHITE) {
             this.currentState = this.playerWhite.getNextMove();
             turn = Team.BLACK;
-            System.out.println("White's Turn");
         } else {
             this.currentState = this.playerBlack.getNextMove();
             turn = Team.WHITE;
-            System.out.println("Black's Turn");
         }
     }
+
+    public int getNodesSearchedLastMove() {
+        int nodesSearched;
+
+        if (turn == Team.WHITE) {
+            nodesSearched = this.playerBlack.getNodesSearched();
+        } else {
+            nodesSearched = this.playerWhite.getNodesSearched();
+        }
+
+        return nodesSearched;
+    }
+
+//    public void generateTreeFromLastMove(TreeView<MinimaxTree> treeView) {
+//        if (turn == Team.WHITE) {
+//            this.playerBlack.generateSearchTreeView(treeView);
+//        } else {
+//            this.playerWhite.generateSearchTreeView(treeView);
+//        }
+//    }
 
     public Board getBoard() {
         return this.currentState;
@@ -70,29 +90,30 @@ public class GameLogic implements Runnable {
         this.currentState = new ChessBitBoard();
 
         if (gameType == GameType.PAWN_ONLY) {
-            currentState.addPiece(1, 2, Piece.WHITE_PAWN);
+            currentState.addPiece(2, 1, Piece.WHITE_PAWN);
             currentState.addPiece(2, 2, Piece.WHITE_PAWN);
-            currentState.addPiece(3, 2, Piece.WHITE_PAWN);
-            currentState.addPiece(4, 2, Piece.WHITE_PAWN);
-            currentState.addPiece(5, 2, Piece.WHITE_PAWN);
-            currentState.addPiece(6, 2, Piece.WHITE_PAWN);
-            currentState.addPiece(7, 2, Piece.WHITE_PAWN);
-            currentState.addPiece(8, 2, Piece.WHITE_PAWN);
+            currentState.addPiece(2, 3, Piece.WHITE_PAWN);
+            currentState.addPiece(2, 4, Piece.WHITE_PAWN);
+            currentState.addPiece(2, 5, Piece.WHITE_PAWN);
+            currentState.addPiece(2, 6, Piece.WHITE_PAWN);
+            currentState.addPiece(2, 7, Piece.WHITE_PAWN);
+            currentState.addPiece(2, 8, Piece.WHITE_PAWN);
 
-            currentState.addPiece(1, 7, Piece.BLACK_PAWN);
-            currentState.addPiece(2, 7, Piece.BLACK_PAWN);
-            currentState.addPiece(3, 7, Piece.BLACK_PAWN);
-            currentState.addPiece(4, 7, Piece.BLACK_PAWN);
-            currentState.addPiece(5, 7, Piece.BLACK_PAWN);
-            currentState.addPiece(6, 7, Piece.BLACK_PAWN);
+            currentState.addPiece(7, 1, Piece.BLACK_PAWN);
+            currentState.addPiece(7, 2, Piece.BLACK_PAWN);
+            currentState.addPiece(7, 3, Piece.BLACK_PAWN);
+            currentState.addPiece(7, 4, Piece.BLACK_PAWN);
+            currentState.addPiece(7, 5, Piece.BLACK_PAWN);
+            currentState.addPiece(7, 6, Piece.BLACK_PAWN);
             currentState.addPiece(7, 7, Piece.BLACK_PAWN);
-            currentState.addPiece(8, 7, Piece.BLACK_PAWN);
+            currentState.addPiece(7, 8, Piece.BLACK_PAWN);
+
         } else if (gameType == GameType.R_RETI_ENDGAME) {
-            currentState.addPiece(1, 6, Piece.BLACK_KING);
+            currentState.addPiece(6, 1, Piece.BLACK_KING);
             currentState.addPiece(8, 8, Piece.WHITE_KING);
 
-            currentState.addPiece(8, 5, Piece.BLACK_PAWN);
-            currentState.addPiece(3, 6, Piece.WHITE_PAWN);
+            currentState.addPiece(5, 8, Piece.BLACK_PAWN);
+            currentState.addPiece(6, 3, Piece.WHITE_PAWN);
         }
     }
 
