@@ -26,7 +26,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class PlayerAI implements Player {
     // Depth of AI search
-    private static final int MAX_SEARCH_DEPTH = 11;
+    private static final int MAX_SEARCH_DEPTH = 3;
 
     private static Logger logger = LogManager.getLogger(PlayerAI.class);
 
@@ -69,7 +69,7 @@ public class PlayerAI implements Player {
         List<MinimaxNode> children = moveTree.getChildren();
 
         // Check if there are no more moves
-        if (children.size() == 0) {
+        if (children == null || children.size() == 0) {
             logger.info("No more possible moves");
             System.exit(0);
         }
@@ -174,30 +174,4 @@ public class PlayerAI implements Player {
         return result;
     }
 
-//    @Override
-//    public void generateSearchTreeView(TreeView<MinimaxTree> treeView) {
-//        treeView.setEditable(false);
-//        TreeItem<MinimaxTree> root = new TreeItem<>(moveTree);
-//
-//        Queue<TreeItem<MinimaxTree>> queue = new LinkedBlockingQueue<>();
-//        queue.add(root);
-//        int maxNodes = 200000;
-//        while (queue.size() > 0 && --maxNodes > 0) {
-//            TreeItem<MinimaxTree> item = queue.poll();
-//
-//            if (item.getValue() != null && item.getValue().getChildren() != null) {
-//                for (MinimaxTree child : item.getValue().getChildren()) {
-//                    if (child.getData() == null) {
-//                        continue;
-//                    }
-//                    TreeItem<MinimaxTree> newItem = new TreeItem<>(child);
-//                    item.getChildren().add(newItem);
-//
-//                    queue.add(newItem);
-//                }
-//            }
-//        }
-//
-//        treeView.setRoot(root);
-//    }
 }

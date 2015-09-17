@@ -42,5 +42,8 @@ public interface Board {
 
     void destroy();
 
+    long flatten();
+    long flattenTeam(boolean team);
+
     long getPiecesOfType(byte pieceType);
 }

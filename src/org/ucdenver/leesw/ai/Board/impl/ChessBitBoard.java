@@ -224,4 +224,30 @@ public class ChessBitBoard implements Board {
     public String getMoveDescription() {
         return (description != null) ? description : "N/A";
     }
+
+    @Override
+    public long flatten() {
+        long result = 0b00L;
+        for (BitBoardLayer layer : this.layers) {
+            result |= layer.getBoard();
+        }
+
+        return result;
+    }
+
+    @Override
+    public long flattenTeam(boolean team) {
+        long result = 0b00L;
+        if (team) {
+            result |= layers[Piece.BLACK_KING].getBoard();
+            result |= layers[Piece.BLACK_QUEEN].getBoard();
+            result |= layers[Piece.BLACK_PAWN].getBoard();
+        } else {
+            result |= layers[Piece.WHITE_KING].getBoard();
+            result |= layers[Piece.WHITE_QUEEN].getBoard();
+            result |= layers[Piece.WHITE_PAWN].getBoard();
+        }
+
+        return result;
+    }
 }

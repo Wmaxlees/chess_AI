@@ -1,7 +1,5 @@
 package org.ucdenver.leesw.ai;
 
-import javafx.scene.control.TreeView;
-import org.ucdenver.leesw.ai.ai.MinimaxTree;
 import org.ucdenver.leesw.ai.board.Board;
 import org.ucdenver.leesw.ai.board.impl.ChessBitBoard;
 import org.ucdenver.leesw.ai.pieces.Team;
@@ -40,7 +38,7 @@ public class GameLogic implements Runnable {
         this.playerBlack = new PlayerAI(Team.BLACK);
 
         // Set initial state of board
-        this.setupGame(GameType.R_RETI_ENDGAME);
+        this.setupGame(GameType.PAWN_ONLY);
     }
 
     @Override
@@ -73,14 +71,6 @@ public class GameLogic implements Runnable {
 
         return nodesSearched;
     }
-
-//    public void generateTreeFromLastMove(TreeView<MinimaxTree> treeView) {
-//        if (turn == Team.WHITE) {
-//            this.playerBlack.generateSearchTreeView(treeView);
-//        } else {
-//            this.playerWhite.generateSearchTreeView(treeView);
-//        }
-//    }
 
     public Board getBoard() {
         return this.currentState;
