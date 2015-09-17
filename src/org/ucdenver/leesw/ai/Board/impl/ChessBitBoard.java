@@ -1,10 +1,8 @@
 package org.ucdenver.leesw.ai.board.impl;
 
-import javafx.scene.control.TreeView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ucdenver.leesw.ai.ai.Move;
-import org.ucdenver.leesw.ai.board.BitBoardLayer;
 import org.ucdenver.leesw.ai.board.Board;
 import org.ucdenver.leesw.ai.pieces.Piece;
 
@@ -18,19 +16,22 @@ public class ChessBitBoard implements Board {
 
     private String description;
 
-    private BitBoardLayer[] layers;
+    private long[] layers;
 
     public ChessBitBoard() {
-        layers = new BitBoardLayer[Piece.NO_PIECE];
+        layers = new long[Piece.NO_PIECE];
+
+        for (byte i = 0; i < layers.length; ++i) {
+            this.layers[i] = ChessBitBoardLayerUtil.getEmptyBoard();
+        }
     }
 
     public ChessBitBoard(Board other) {
-        layers = new BitBoardLayer[Piece.NO_PIECE];
+        layers = new long[Piece.NO_PIECE];
 
         if (other != null) {
             for (byte i = 0; i < layers.length; ++i) {
-                this.layers[i] = new ChessBitBoardLayer();
-                this.layers[i].setBoard(other.getPiecesOfType(i));
+                this.layers[i] = other.getPiecesOfType(i);
             }
         }
     }
@@ -39,68 +40,47 @@ public class ChessBitBoard implements Board {
     @Override
     public void addPiece(int x, int y, byte piece) {
         // Sanity check
-        if (piece > Piece.NO_PIECE) {
+        if (piece > this.layers.length) {
             logger.error("Error: Attempting to add piece of unrecognized type: {}", piece);
             return;
         }
-
-        // Get the proper layer
-        BitBoardLayer layer = layers[piece];
-
-        // Initialize layer if needed
-        if (layer == null) {
-            layer = new ChessBitBoardLayer();
-        }
-
         logger.info("Adding piece to the board (x: {}, y: {}, {})", x, y, Piece.getSymbol(piece));
-        layer.addPiece(x, y);
 
         // Reset to array
-        layers[piece] = layer;
+        layers[piece] = ChessBitBoardLayerUtil.addPiece(layers[piece], x, y);
     }
 
     @Override
     public void addPiece(long mask, byte piece) {
         // Sanity check
-        if (piece > Piece.NO_PIECE) {
+        if (piece > this.layers.length) {
             logger.error("Error: Attempting to add piece of unrecognized type: {}", piece);
             return;
         }
 
-        // Get the proper layer
-        BitBoardLayer layer = layers[piece];
-
-        // Initialize layer if needed
-        if (layer == null) {
-            layer = new ChessBitBoardLayer();
-        }
-
-        layer.addPiece(mask);
-
-        layers[piece] = layer;
+        layers[piece] = ChessBitBoardLayerUtil.addPiece(layers[piece], mask);
     }
 
     // Remove a piece from the board
     @Override
     public void removePiece(int x, int y) {
-        for (BitBoardLayer layer : layers) {
-            layer.removePiece(x, y);
+        for (byte i = 0; i < this.layers.length; ++i) {
+            layers[i] = ChessBitBoardLayerUtil.removePiece(layers[i], x, y);
         }
     }
 
     @Override
     public void removePiece(long mask) {
-        for (BitBoardLayer layer : layers) {
-            layer.removePiece(mask);
+        for (byte i = 0; i < this.layers.length; ++i) {
+            layers[i] = ChessBitBoardLayerUtil.removePiece(layers[i], mask);
         }
     }
 
     // Get a piece from a specific X, Y coordinate (if any exists)
     @Override
     public byte getPieceType(int x, int y) {
-        for (byte i = 0; i < layers.length; ++i) {
-            BitBoardLayer layer = layers[i];
-            if (layer != null && layer.isPiece(x, y)) {
+        for (byte i = 0; i < this.layers.length; ++i) {
+            if (ChessBitBoardLayerUtil.isPiece(layers[i], x, y)) {
                 return i;
             }
         }
@@ -110,9 +90,8 @@ public class ChessBitBoard implements Board {
 
     @Override
     public byte getPieceType(long mask) {
-        for (byte i = 0; i < layers.length; ++i) {
-            BitBoardLayer layer = layers[i];
-            if (layer != null && (layer.getBoard() & mask) == mask) {
+        for (byte i = 0; i < this.layers.length; ++i) {
+            if (ChessBitBoardLayerUtil.isPiece(layers[i], mask)) {
                 return i;
             }
         }
@@ -122,90 +101,50 @@ public class ChessBitBoard implements Board {
 
     @Override
     public boolean doesPieceExist(int x, int y) {
-        BitBoardLayer tempBoard = new ChessBitBoardLayer();
-        for (BitBoardLayer layer : layers) {
-            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layer));
-        }
-
-        return tempBoard.isPiece(x, y);
+        return ChessBitBoardLayerUtil.isPiece(this.flatten(), x, y);
     }
 
     @Override
     public boolean doesPieceExist(long mask) {
-        BitBoardLayer tempBoard = new ChessBitBoardLayer();
-        for (BitBoardLayer layer : layers) {
-            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layer));
-        }
-
-        return (tempBoard.getBoard() & mask) == mask;
+        return ChessBitBoardLayerUtil.isPiece(this.flatten(), mask);
     }
 
 
     @Override
     public boolean doesPieceExist(int x, int y, boolean team) {
-        BitBoardLayer tempBoard = new ChessBitBoardLayer();
-        if (team) {     // Black
-            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.BLACK_KING]));
-            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.BLACK_PAWN]));
-            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.BLACK_QUEEN]));
-        } else {        // White
-            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.WHITE_KING]));
-            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.WHITE_PAWN]));
-            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.WHITE_QUEEN]));
-        }
-
-        return tempBoard.isPiece(x, y);
+        return ChessBitBoardLayerUtil.isPiece(this.flattenTeam(team), x, y);
     }
 
     @Override
     public boolean doesPieceExist(long mask, boolean team) {
-        BitBoardLayer tempBoard = new ChessBitBoardLayer();
-        if (team) {     // Black
-            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.BLACK_KING]));
-            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.BLACK_PAWN]));
-            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.BLACK_QUEEN]));
-        } else {        // White
-            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.WHITE_KING]));
-            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.WHITE_PAWN]));
-            tempBoard.setBoard(BitBoardLayer.or(tempBoard, layers[Piece.WHITE_QUEEN]));
-        }
-
-        return (tempBoard.getBoard() & mask) == mask;
+        return ChessBitBoardLayerUtil.isPiece(this.flattenTeam(team), mask);
     }
 
     @Override
     public long getPiecesOfType(byte pieceType) {
         // Sanity check
-        if (pieceType > Piece.NO_PIECE) {
+        if (pieceType > this.layers.length) {
             logger.error("Error: Attempting to get pieces of unrecognized type: {}", pieceType);
             return Long.MAX_VALUE;
         }
 
-        // Get the board or make a blank one if none exists
-        BitBoardLayer layer = layers[pieceType];
-        if (layer == null) {
-            layer = new ChessBitBoardLayer();
-        }
-
-        return layer.getBoard();
+        return layers[pieceType];
     }
 
     @Override
     public void destroy() {
-        for (BitBoardLayer layer : layers) {
-            layer = null;
-        }
+        this.layers = null;
     }
 
     @Override
     public byte getPopulationOfType(byte pieceType) {
         // Sanity check
-        if (pieceType > Piece.NO_PIECE) {
+        if (pieceType > this.layers.length) {
             logger.error("Attempting to get population of piece type that doesn't exist: {}", pieceType);
             return 0;
         }
 
-        return this.layers[pieceType].getPopulationCount();
+        return ChessBitBoardLayerUtil.getPopulationCount(this.layers[pieceType]);
     }
 
     @Override
@@ -213,11 +152,8 @@ public class ChessBitBoard implements Board {
         this.description = move.toString();
 
         this.removePiece(move.getStartLocation());
+        this.removePiece(move.getTargetLocation());
         this.addPiece(move.getTargetLocation(), move.getPiece());
-
-        if (move.isCapturing()) {
-            this.layers[move.capturePiece()].removePiece(move.getTargetLocation());
-        }
     }
 
     @Override
@@ -228,8 +164,8 @@ public class ChessBitBoard implements Board {
     @Override
     public long flatten() {
         long result = 0b00L;
-        for (BitBoardLayer layer : this.layers) {
-            result |= layer.getBoard();
+        for (long layer : this.layers) {
+            result |= layer;
         }
 
         return result;
@@ -239,13 +175,13 @@ public class ChessBitBoard implements Board {
     public long flattenTeam(boolean team) {
         long result = 0b00L;
         if (team) {
-            result |= layers[Piece.BLACK_KING].getBoard();
-            result |= layers[Piece.BLACK_QUEEN].getBoard();
-            result |= layers[Piece.BLACK_PAWN].getBoard();
+            result |= layers[Piece.BLACK_KING];
+            result |= layers[Piece.BLACK_QUEEN];
+            result |= layers[Piece.BLACK_PAWN];
         } else {
-            result |= layers[Piece.WHITE_KING].getBoard();
-            result |= layers[Piece.WHITE_QUEEN].getBoard();
-            result |= layers[Piece.WHITE_PAWN].getBoard();
+            result |= layers[Piece.WHITE_KING];
+            result |= layers[Piece.WHITE_QUEEN];
+            result |= layers[Piece.WHITE_PAWN];
         }
 
         return result;

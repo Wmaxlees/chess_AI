@@ -23,10 +23,12 @@ public class ChessMoveGenerator implements MoveGenerator {
     @Override
     public Collection<Move> generateMoves(Board board, boolean team) {
         ArrayList<Move> result = new ArrayList<>();
+        long freeSpaces = ~board.flatten();
+        long enemyPieces = board.flattenTeam(!team);
 
         // Get pawn moves
         byte pawnPiece = team ? Piece.BLACK_PAWN : Piece.WHITE_PAWN;
-       result.addAll(this.generateAllPawnMoves(board.getPiecesOfType(pawnPiece), team, board));
+       result.addAll(this.generateAllPawnMoves(board.getPiecesOfType(pawnPiece), team, freeSpaces, enemyPieces));
 
         // Process possible pawn moves
 //        Iterator<Move> iter = possiblePawnMoves.iterator();
@@ -50,35 +52,35 @@ public class ChessMoveGenerator implements MoveGenerator {
 //        }
 
         // Get king moves
-        byte kingPiece = team ? Piece.BLACK_KING : Piece.WHITE_KING;
-        Collection<Move> possibleKingMoves = this.generateAllKingMoves(board.getPiecesOfType(kingPiece), team);
-
-        // Process possible king moves
-        Iterator<Move> iter = possibleKingMoves.iterator();
-        while (iter.hasNext()) {
-            Move move = iter.next();
-
-            // Make sure there is either an enemy piece or an empty square at target
-            if (board.doesPieceExist(move.getTargetLocation(), !team)) {
-                move.setCapturing(board.getPieceType(move.getTargetLocation()));
-                result.add(move);
-            } else if (!board.doesPieceExist(move.getTargetLocation(), team)) {
-                result.add(move);
-            }
-
-            iter.remove();
-        }
-
-        // Generate queen moves
-        result.addAll(this.generateAllQueenMoves(board.getPiecesOfType(
-                        team ? Piece.BLACK_QUEEN : Piece.WHITE_QUEEN),
-                        team,
-                        board));
+//        byte kingPiece = team ? Piece.BLACK_KING : Piece.WHITE_KING;
+//        Collection<Move> possibleKingMoves = this.generateAllKingMoves(board.getPiecesOfType(kingPiece), team);
+//
+//        // Process possible king moves
+//        Iterator<Move> iter = possibleKingMoves.iterator();
+//        while (iter.hasNext()) {
+//            Move move = iter.next();
+//
+//            // Make sure there is either an enemy piece or an empty square at target
+//            if (board.doesPieceExist(move.getTargetLocation(), !team)) {
+//                move.setCapturing(board.getPieceType(move.getTargetLocation()));
+//                result.add(move);
+//            } else if (!board.doesPieceExist(move.getTargetLocation(), team)) {
+//                result.add(move);
+//            }
+//
+//            iter.remove();
+//        }
+//
+//        // Generate queen moves
+//        result.addAll(this.generateAllQueenMoves(board.getPiecesOfType(
+//                        team ? Piece.BLACK_QUEEN : Piece.WHITE_QUEEN),
+//                        team,
+//                        board));
 
         return result;
     }
 
-    private Collection<Move> generateAllPawnMoves(long startState, boolean team, Board board) {
+    private Collection<Move> generateAllPawnMoves(long startState, boolean team, long freeSpaces, long enemyPieces) {
         ArrayList<Move> results = new ArrayList<>();
 
         // Check if there are any pieces to generate moves
@@ -93,114 +95,104 @@ public class ChessMoveGenerator implements MoveGenerator {
         if (team == Team.WHITE) {
             // Move pieces forward one square
             long forward = startState << 8;
-            forward &= ~board.flatten();
-            ArrayList<Long> forwardMoves = this.splitOutPieces(forward);
-            for (long forwardMove : forwardMoves) {
+            forward &= freeSpaces;
+            for (long forwardMove : this.splitOutPieces(forward)) {
                 Move move = new ChessMove();
                 move.setStartLocation(forwardMove >>> 8);
                 move.setTargetLocation(forwardMove);
-                if ((forwardMove & BitUtilities.getRowMask(8)) != 0b00) {
-                    move.setPiece(Piece.WHITE_QUEEN);
-                } else {
-                    move.setPiece(Piece.WHITE_PAWN);
-                }
+                move.setPiece(Piece.WHITE_PAWN);
+//                if ((forwardMove & BitUtilities.getRowMask(8)) != 0b00) {
+//                    move.setPiece(Piece.WHITE_QUEEN);
+//                } else {
+//                    move.setPiece(Piece.WHITE_PAWN);
+//                }
                 results.add(move);
             }
-            forwardMoves.clear();
 
             // Generate take-left moves
             long take = startState & ~BitUtilities.getColumnMask(1);
             take = take << 7;
-            take &= board.flattenTeam(Team.BLACK);
-            ArrayList<Long> takeMoves = this.splitOutPieces(take);
-            for (long takeMove : takeMoves) {
+            take &= enemyPieces;
+            for (long takeMove : this.splitOutPieces(take)) {
                 Move move = new ChessMove();
                 move.setStartLocation(takeMove >>> 7);
                 move.setTargetLocation(takeMove);
-                if ((takeMove & BitUtilities.getRowMask(8)) != 0b00) {
-                    move.setPiece(Piece.WHITE_QUEEN);
-                } else {
-                    move.setPiece(Piece.WHITE_PAWN);
-                }
-                move.setCapturing(board.getPieceType(takeMove));
+                move.setPiece(Piece.WHITE_PAWN);
+//                if ((takeMove & BitUtilities.getRowMask(8)) != 0b00) {
+//                    move.setPiece(Piece.WHITE_QUEEN);
+//                } else {
+//                    move.setPiece(Piece.WHITE_PAWN);
+//                }
                 results.add(move);
             }
-            takeMoves.clear();
 
             // Generate take-right moves
             take = startState & ~BitUtilities.getColumnMask(8);
             take = take << 9;
-            take &= board.flattenTeam(Team.BLACK);
-            takeMoves = this.splitOutPieces(take);
-            for (long takeMove : takeMoves) {
+            take &= enemyPieces;
+            for (long takeMove : this.splitOutPieces(take)) {
                 Move move = new ChessMove();
                 move.setStartLocation(takeMove >>> 9);
                 move.setTargetLocation(takeMove);
-                if ((takeMove & BitUtilities.getRowMask(8)) != 0b00) {
-                    move.setPiece(Piece.WHITE_QUEEN);
-                } else {
-                    move.setPiece(Piece.WHITE_PAWN);
-                }
-                move.setCapturing(board.getPieceType(takeMove));
+                move.setPiece(Piece.WHITE_PAWN);
+//                if ((takeMove & BitUtilities.getRowMask(8)) != 0b00) {
+//                    move.setPiece(Piece.WHITE_QUEEN);
+//                } else {
+//                    move.setPiece(Piece.WHITE_PAWN);
+//                }
                 results.add(move);
             }
-            takeMoves.clear();
-            
+
         } else {
             // Move pieces down one square
             long forward = startState >>> 8;
-            forward &= ~board.flatten();
-            ArrayList<Long> forwardMoves = this.splitOutPieces(forward);
-            for (long forwardMove : forwardMoves) {
+            forward &= freeSpaces;
+            for (long forwardMove : this.splitOutPieces(forward)) {
                 Move move = new ChessMove();
                 move.setStartLocation(forwardMove << 8);
                 move.setTargetLocation(forwardMove);
-                if ((forwardMove & BitUtilities.getRowMask(1)) != 0b00) {
-                    move.setPiece(Piece.BLACK_QUEEN);
-                } else {
-                    move.setPiece(Piece.BLACK_PAWN);
-                }
+                move.setPiece(Piece.BLACK_PAWN);
+//                if ((forwardMove & BitUtilities.getRowMask(1)) != 0b00) {
+//                    move.setPiece(Piece.BLACK_QUEEN);
+//                } else {
+//                    move.setPiece(Piece.BLACK_PAWN);
+//                }
                 results.add(move);
             }
-            forwardMoves.clear();
 
             // Generate take-left moves
             long take = startState & ~BitUtilities.getColumnMask(1);
             take = take >>> 9;
-            take &= board.flattenTeam(Team.WHITE);
-            ArrayList<Long> takeMoves = this.splitOutPieces(take);
-            for (long takeMove : takeMoves) {
+            take &= enemyPieces;
+            for (long takeMove : this.splitOutPieces(take)) {
                 Move move = new ChessMove();
                 move.setStartLocation(takeMove << 9);
                 move.setTargetLocation(takeMove);
-                if ((takeMove & BitUtilities.getRowMask(1)) != 0b00) {
-                    move.setPiece(Piece.BLACK_QUEEN);
-                } else {
-                    move.setPiece(Piece.BLACK_PAWN);
-                }
-                move.setCapturing(board.getPieceType(takeMove));
+                move.setPiece(Piece.BLACK_PAWN);
+//                if ((takeMove & BitUtilities.getRowMask(1)) != 0b00) {
+//                    move.setPiece(Piece.BLACK_QUEEN);
+//                } else {
+//                    move.setPiece(Piece.BLACK_PAWN);
+//                }
                 results.add(move);
             }
-            takeMoves.clear();
 
             // Generate take-right moves
             take = startState & ~BitUtilities.getColumnMask(8);
             take = take >>> 7;
-            take &= board.flattenTeam(Team.WHITE);
-            takeMoves = this.splitOutPieces(take);
-            for (long takeMove : takeMoves) {
+            take &= enemyPieces;
+            for (long takeMove : this.splitOutPieces(take)) {
                 Move move = new ChessMove();
                 move.setStartLocation(takeMove << 7);
                 move.setTargetLocation(takeMove);
-                if ((takeMove & BitUtilities.getRowMask(1)) != 0b00) {
-                    move.setPiece(Piece.BLACK_QUEEN);
-                } else {
-                    move.setPiece(Piece.BLACK_PAWN);
-                }
-                move.setCapturing(board.getPieceType(takeMove));
+                move.setPiece(Piece.BLACK_PAWN);
+//                if ((takeMove & BitUtilities.getRowMask(1)) != 0b00) {
+//                    move.setPiece(Piece.BLACK_QUEEN);
+//                } else {
+//                    move.setPiece(Piece.BLACK_PAWN);
+//                }
                 results.add(move);
             }
-            takeMoves.clear();
         }
 
         return results;
@@ -343,7 +335,6 @@ public class ChessMoveGenerator implements MoveGenerator {
 
                 // Check if location has other teams piece
                 if (board.doesPieceExist(lastMove, !team)) {
-                    move.setCapturing(board.getPieceType(lastMove));
                     results.add(move);
                     break;
                 }
@@ -368,7 +359,6 @@ public class ChessMoveGenerator implements MoveGenerator {
 
                 // Check if location has other teams piece
                 if (board.doesPieceExist(lastMove, !team)) {
-                    move.setCapturing(board.getPieceType(lastMove));
                     results.add(move);
                     break;
                 }
@@ -393,7 +383,6 @@ public class ChessMoveGenerator implements MoveGenerator {
 
                 // Check if location has other teams piece
                 if (board.doesPieceExist(lastMove, !team)) {
-                    move.setCapturing(board.getPieceType(lastMove));
                     results.add(move);
                     break;
                 }
@@ -418,7 +407,6 @@ public class ChessMoveGenerator implements MoveGenerator {
 
                 // Check if location has other teams piece
                 if (board.doesPieceExist(lastMove, !team)) {
-                    move.setCapturing(board.getPieceType(lastMove));
                     results.add(move);
                     break;
                 }
@@ -430,15 +418,18 @@ public class ChessMoveGenerator implements MoveGenerator {
         return results;
     }
 
+    private static long TOP_RIGHT_CORNER = 0b01L << 63;
     private ArrayList<Long> splitOutPieces(long state) {
         ArrayList<Long> pieces = new ArrayList<>();
 
-        // Split out pieces
-        for (long i = 0L; i < 64L; ++i) {
-            long temp = state & (0b01L << i);
-            if (temp != 0L) {
+        long mask = 0b01L;
+        while (mask != TOP_RIGHT_CORNER) {
+            long temp = mask & state;
+            if (temp != 0b00L) {
                 pieces.add(temp);
             }
+
+            mask = mask << 1;
         }
 
         return pieces;

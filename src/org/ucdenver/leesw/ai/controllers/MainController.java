@@ -176,7 +176,7 @@ public class MainController {
         // Initialize the tree controller
         this.treeController = new TreeController();
         this.treeController.setDepth(3);
-        EventManager.getEventManager().addEventListener(treeController, Event.EVENT_TYPE_TREE_BUILT);
+        // EventManager.getEventManager().addEventListener(treeController, Event.EVENT_TYPE_TREE_BUILT);
 
         AnimationTimer updateTimer = new AnimationTimer() {
             public void handle(long ms) {
@@ -189,8 +189,6 @@ public class MainController {
                 if (logicThread != null && logicThread.getState() == Thread.State.TERMINATED) {
                     Heurisitic heurisitic = new SimpleChessHeuristic();
                     movesConsideredText.setText(((Integer) GameLogic.getGame().getNodesSearchedLastMove()).toString());
-
-//                    GameLogic.getGame().generateTreeFromLastMove(searchTreeView);
 
                     currentValueText.setText(((Integer) heurisitic.generateValue(GameLogic.getGame().getBoard(), Team.WHITE)).toString());
 

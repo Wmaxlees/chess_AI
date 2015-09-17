@@ -1,6 +1,5 @@
 package org.ucdenver.leesw.ai.ai;
 
-import org.ucdenver.leesw.ai.board.BitBoardLayer;
 import org.ucdenver.leesw.ai.board.Board;
 
 /**

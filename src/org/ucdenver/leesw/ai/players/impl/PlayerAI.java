@@ -26,7 +26,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class PlayerAI implements Player {
     // Depth of AI search
-    private static final int MAX_SEARCH_DEPTH = 3;
+    private static final int MAX_SEARCH_DEPTH = 11;
 
     private static Logger logger = LogManager.getLogger(PlayerAI.class);
 
