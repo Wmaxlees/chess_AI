@@ -1,6 +1,7 @@
-package org.ucdenver.leesw.ai.ai;
+package org.ucdenver.leesw.ai.ai.collections;
 
 import org.ucdenver.leesw.ai.ai.collections.MinimaxNode;
+import org.ucdenver.leesw.ai.ai.collections.MinimaxTree;
 
 import java.util.List;
 

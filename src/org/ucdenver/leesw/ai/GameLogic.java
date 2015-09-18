@@ -38,7 +38,7 @@ public class GameLogic implements Runnable {
         this.playerBlack = new PlayerAI(Team.BLACK);
 
         // Set initial state of board
-        this.setupGame(GameType.PAWN_ONLY);
+        this.setupGame(GameType.R_RETI_ENDGAME);
     }
 
     @Override
@@ -104,10 +104,47 @@ public class GameLogic implements Runnable {
 
             currentState.addPiece(5, 8, Piece.BLACK_PAWN);
             currentState.addPiece(6, 3, Piece.WHITE_PAWN);
+        } else {
+            currentState.addPiece(2, 1, Piece.WHITE_PAWN);
+            currentState.addPiece(2, 2, Piece.WHITE_PAWN);
+            currentState.addPiece(2, 3, Piece.WHITE_PAWN);
+            currentState.addPiece(2, 4, Piece.WHITE_PAWN);
+            currentState.addPiece(2, 5, Piece.WHITE_PAWN);
+            currentState.addPiece(2, 6, Piece.WHITE_PAWN);
+            currentState.addPiece(2, 7, Piece.WHITE_PAWN);
+            currentState.addPiece(2, 8, Piece.WHITE_PAWN);
+
+            currentState.addPiece(1, 1, Piece.WHITE_ROOK);
+            currentState.addPiece(1, 2, Piece.WHITE_KNIGHT);
+            currentState.addPiece(1, 3, Piece.WHITE_BISHOP);
+            currentState.addPiece(1, 4, Piece.WHITE_QUEEN);
+            currentState.addPiece(1, 5, Piece.WHITE_KING);
+            currentState.addPiece(1, 6, Piece.WHITE_BISHOP);
+            currentState.addPiece(1, 7, Piece.WHITE_KNIGHT);
+            currentState.addPiece(1, 8, Piece.WHITE_ROOK);
+
+            currentState.addPiece(7, 1, Piece.BLACK_PAWN);
+            currentState.addPiece(7, 2, Piece.BLACK_PAWN);
+            currentState.addPiece(7, 3, Piece.BLACK_PAWN);
+            currentState.addPiece(7, 4, Piece.BLACK_PAWN);
+            currentState.addPiece(7, 5, Piece.BLACK_PAWN);
+            currentState.addPiece(7, 6, Piece.BLACK_PAWN);
+            currentState.addPiece(7, 7, Piece.BLACK_PAWN);
+            currentState.addPiece(7, 8, Piece.BLACK_PAWN);
+
+            currentState.addPiece(8, 1, Piece.BLACK_ROOK);
+            currentState.addPiece(8, 2, Piece.BLACK_KNIGHT);
+            currentState.addPiece(8, 3, Piece.BLACK_BISHOP);
+            currentState.addPiece(8, 4, Piece.BLACK_QUEEN);
+            currentState.addPiece(8, 5, Piece.BLACK_KING);
+            currentState.addPiece(8, 6, Piece.BLACK_BISHOP);
+            currentState.addPiece(8, 7, Piece.BLACK_KNIGHT);
+            currentState.addPiece(8, 8, Piece.BLACK_ROOK);
         }
     }
 
     private enum GameType {
+        DEFAULT,
         PAWN_ONLY,
         R_RETI_ENDGAME
     }

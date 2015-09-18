@@ -9,8 +9,7 @@ import javafx.scene.control.TreeView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ucdenver.leesw.ai.GameLogic;
-import org.ucdenver.leesw.ai.ai.Heurisitic;
-import org.ucdenver.leesw.ai.ai.MinimaxTree;
+import org.ucdenver.leesw.ai.ai.collections.MinimaxTree;
 import org.ucdenver.leesw.ai.ai.impl.SimpleChessHeuristic;
 import org.ucdenver.leesw.ai.pieces.Piece;
 import org.ucdenver.leesw.ai.pieces.Team;
@@ -175,22 +174,23 @@ public class MainController {
     public void initialize() {
         // Initialize the tree controller
         this.treeController = new TreeController();
-        this.treeController.setDepth(3);
-        // EventManager.getEventManager().addEventListener(treeController, Event.EVENT_TYPE_TREE_BUILT);
+        this.treeController.setDepth(4);
+        EventManager.getEventManager().addEventListener(treeController, Event.EVENT_TYPE_TREE_BUILT);
 
         AnimationTimer updateTimer = new AnimationTimer() {
             public void handle(long ms) {
                 // Update game board
                 updateBoard();
                 treeController.updateTree(searchTreeView);
-                EventManager.getEventManager().processEvents();
+
+                // Run the event manager thread
+                (new Thread(EventManager.getEventManager(), "EventManager")).run();
 
                 // Check state of thread
                 if (logicThread != null && logicThread.getState() == Thread.State.TERMINATED) {
-                    Heurisitic heurisitic = new SimpleChessHeuristic();
                     movesConsideredText.setText(((Integer) GameLogic.getGame().getNodesSearchedLastMove()).toString());
 
-                    currentValueText.setText(((Integer) heurisitic.generateValue(GameLogic.getGame().getBoard(), Team.WHITE)).toString());
+                    currentValueText.setText(((Short) SimpleChessHeuristic.generateValue(GameLogic.getGame().getBoard(), Team.WHITE)).toString());
 
                     logger.info("Completed Search");
                     try {

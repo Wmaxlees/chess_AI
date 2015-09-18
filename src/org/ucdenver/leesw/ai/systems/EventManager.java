@@ -11,7 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by william.lees on 9/16/15.
  */
-public class EventManager {
+public class EventManager implements Runnable {
 
     private static Logger logger = LogManager.getLogger(EventManager.class);
 
@@ -56,7 +56,7 @@ public class EventManager {
         this.listeners[eventType].add(listener);
     }
 
-    public void processEvents() {
+    public void run() {
         while (events.peek() != null) {
             Event event = events.poll();
             for (EventListener listener : listeners[event.getEventType()]) {

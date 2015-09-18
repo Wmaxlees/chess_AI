@@ -3,6 +3,8 @@ package org.ucdenver.leesw.ai;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.math.BigInteger;
+
 /**
  * Created by william.lees on 9/16/15.
  */
@@ -203,6 +205,24 @@ public class BitUtilities {
         return COLUMN_MASK[i-1];
     }
 
+    public static byte getRow(long board) {
+        for (byte i = 1; i <= 8; ++i) {
+            if ((getRowMask(i) & board) != 0) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static byte getColumn(long board) {
+        for (byte i = 1; i <= 8; ++i) {
+            if ((getColumnMask(i) & board) != 0) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public static long getRowMask(int i) {
         if (i > ROW_MASK.length) {
             logger.error("Requesting ROW_MASK of row that doesn't exist: {}", i);
@@ -214,5 +234,20 @@ public class BitUtilities {
 
     public static long getLocationMask(int x, int y) {
         return LOCATION_MASK[x-1][y-1];
+    }
+
+    public static String generateBoardString(long board) {
+        String result = "";
+
+        result += String.format("%08d\n", new BigInteger(Long.toBinaryString((getRowMask(8) & board) >> 56)));
+        result += String.format("%08d\n", new BigInteger(Long.toBinaryString((getRowMask(7) & board) >> 48)));
+        result += String.format("%08d\n", new BigInteger(Long.toBinaryString((getRowMask(6) & board) >> 40)));
+        result += String.format("%08d\n", new BigInteger(Long.toBinaryString((getRowMask(5) & board) >> 32)));
+        result += String.format("%08d\n", new BigInteger(Long.toBinaryString((getRowMask(4) & board) >> 24)));
+        result += String.format("%08d\n", new BigInteger(Long.toBinaryString((getRowMask(3) & board) >> 16)));
+        result += String.format("%08d\n", new BigInteger(Long.toBinaryString((getRowMask(2) & board) >>  8)));
+        result += String.format("%08d", new BigInteger(Long.toBinaryString(getRowMask(1) & board)));
+
+        return result;
     }
 }

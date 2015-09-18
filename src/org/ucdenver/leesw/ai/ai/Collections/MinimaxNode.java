@@ -1,7 +1,7 @@
 package org.ucdenver.leesw.ai.ai.collections;
 
-import org.ucdenver.leesw.ai.ai.MinimaxTree;
-import org.ucdenver.leesw.ai.ai.Move;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.ucdenver.leesw.ai.board.Board;
 
 import java.util.ArrayList;
@@ -11,21 +11,24 @@ import java.util.List;
  * Created by william.lees on 9/14/15.
  */
 public class MinimaxNode implements MinimaxTree {
+    private static Logger logger = LogManager.getLogger(MinimaxNode.class);
+
     private List<MinimaxNode> subTree;
-    private int value;
+    private short value;
     private Board data;
+    private boolean chosen;
 
     public MinimaxNode(Board data) {
         this.data = data;
     }
 
     @Override
-    public int getValue() {
+    public short getValue() {
         return value;
     }
 
     @Override
-    public void setValue(int value) {
+    public void setValue(short value) {
         this.value = value;
     }
 
@@ -51,5 +54,15 @@ public class MinimaxNode implements MinimaxTree {
     @Override
     public String toString() {
         return this.data.getMoveDescription() + " = " + this.value;
+    }
+
+    @Override
+    public boolean chosen() {
+        return this.chosen;
+    }
+
+    @Override
+    public void choose() {
+        this.chosen = true;
     }
 }

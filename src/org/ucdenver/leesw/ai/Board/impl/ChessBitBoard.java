@@ -11,11 +11,8 @@ import org.ucdenver.leesw.ai.pieces.Piece;
  * Created by william.lees on 9/15/15.
  */
 public class ChessBitBoard implements Board {
-
     private static Logger logger = LogManager.getLogger(ChessBitBoard.class);
-
     private String description;
-
     private long[] layers;
 
     public ChessBitBoard() {
@@ -178,10 +175,16 @@ public class ChessBitBoard implements Board {
             result |= layers[Piece.BLACK_KING];
             result |= layers[Piece.BLACK_QUEEN];
             result |= layers[Piece.BLACK_PAWN];
+            result |= layers[Piece.BLACK_BISHOP];
+            result |= layers[Piece.BLACK_ROOK];
+            result |= layers[Piece.BLACK_KNIGHT];
         } else {
             result |= layers[Piece.WHITE_KING];
             result |= layers[Piece.WHITE_QUEEN];
             result |= layers[Piece.WHITE_PAWN];
+            result |= layers[Piece.WHITE_BISHOP];
+            result |= layers[Piece.WHITE_ROOK];
+            result |= layers[Piece.WHITE_KNIGHT];
         }
 
         return result;

@@ -1,12 +1,8 @@
 package org.ucdenver.leesw.ai.players.impl;
 
-import javafx.scene.control.TreeView;
 import org.ucdenver.leesw.ai.GameLogic;
-import org.ucdenver.leesw.ai.ai.MinimaxTree;
 import org.ucdenver.leesw.ai.board.Board;
 import org.ucdenver.leesw.ai.players.Player;
-
-import java.lang.reflect.Method;
 
 /**
  * Created by william.lees on 9/15/15.
