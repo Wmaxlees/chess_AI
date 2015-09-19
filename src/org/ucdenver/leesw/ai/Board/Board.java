@@ -1,13 +1,6 @@
 package org.ucdenver.leesw.ai.board;
 
-import javafx.scene.control.TreeView;
-import javafx.util.Pair;
 import org.ucdenver.leesw.ai.ai.Move;
-import org.ucdenver.leesw.ai.pieces.Piece;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * Created by william.lees on 9/15/15.

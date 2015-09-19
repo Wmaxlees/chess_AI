@@ -3,6 +3,7 @@ package org.ucdenver.leesw.ai.players.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import org.ucdenver.leesw.ai.BitUtilities;
 import org.ucdenver.leesw.ai.ai.*;
 import org.ucdenver.leesw.ai.ai.collections.MinimaxTree;
 import org.ucdenver.leesw.ai.ai.collections.MinimaxTreeControl;
@@ -12,6 +13,7 @@ import org.ucdenver.leesw.ai.board.Board;
 import org.ucdenver.leesw.ai.GameLogic;
 import org.ucdenver.leesw.ai.board.impl.ChessBitBoard;
 import org.ucdenver.leesw.ai.ai.collections.MinimaxNode;
+import org.ucdenver.leesw.ai.board.impl.ChessBitBoardLayerUtil;
 import org.ucdenver.leesw.ai.pieces.Piece;
 import org.ucdenver.leesw.ai.players.Player;
 import org.ucdenver.leesw.ai.systems.Event;
@@ -25,7 +27,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class PlayerAI implements Player {
     // Depth of AI search
-    private static final int MAX_SEARCH_DEPTH = 2;
+    private static final int MAX_SEARCH_DEPTH = 9;
 
     private static Logger logger = LogManager.getLogger(PlayerAI.class);
 
@@ -89,12 +91,7 @@ public class PlayerAI implements Player {
     }
 
     private boolean gameOver(MinimaxTree tree) {
-        if (tree.getData().getPiecesOfType(Piece.BLACK_KING) == 0b00L && tree.getData().getPiecesOfType(Piece.WHITE_KING) != 0b00L)
-            return true;
-        if (tree.getData().getPiecesOfType(Piece.BLACK_KING) != 0b00L && tree.getData().getPiecesOfType(Piece.WHITE_KING) == 0b00L)
-            return true;
-
-        return false;
+        return (ChessBitBoardLayerUtil.getPopulationCount(tree.getData().getPiecesOfType(Piece.BLACK_KING) & tree.getData().getPiecesOfType(Piece.WHITE_KING)) == 1);
     }
 
     private short generateSubTree(MinimaxTree root, int depth, short α, short β, boolean maximize) {
@@ -108,27 +105,36 @@ public class PlayerAI implements Player {
             return value;
         }
 
+        // Generate the child states
+        List<Board> children = this.generateChildStates(root.getData(), (maximize ? team : !team));
+
+        // Leaf node
+        if (children.size() == 0) {
+            short value = SimpleChessHeuristic.generateValue(root.getData(), this.team);
+            root.setValue(value);
+            return value;
+        }
+
+        // Add the child states to the tree
+        for (byte i = 0; i < children.size(); ++i) {
+            Board child = children.get(i);
+
+            // Add the node to the tree
+            MinimaxNode childNode = new MinimaxNode(child);
+            MinimaxTreeControl.addNode(childNode, root);
+        }
+
         // Check if we're maximizing on this move
+        short value;
         if (maximize) {
-            short value = Short.MIN_VALUE;
+            value = Short.MIN_VALUE;
 
-            // Generate the child states
-            Collection<Board> children = this.generateChildStates(root.getData(), team);
+            for (byte i = 0; i < root.getChildren().size(); ++i) {
+                logger.info(depth);
 
-            // Leaf node
-            if (children.size() == 0) {
-                value = SimpleChessHeuristic.generateValue(root.getData(), this.team);
-                return value;
-            }
+                MinimaxNode childNode = root.getChildren().get(i);
 
-            // Process the child states
-            for (Board child : children) {
-                // Add the node to the tree
-                MinimaxNode childNode = new MinimaxNode(child);
-                MinimaxTreeControl.addNode(childNode, root);
-
-                // Generate subtree for node
-                value = (short) Math.max(value, generateSubTree(childNode, depth-1, α, β, false));
+                value = (short) Math.max(value, generateSubTree(childNode, depth - 1, α, β, false));
                 α = (short) Math.max(value, α);
 
                 // Check for beta cutoff
@@ -136,31 +142,15 @@ public class PlayerAI implements Player {
                     break;
                 }
             }
+        } else {
+            value = Short.MAX_VALUE;
 
-            root.setValue(value);
-            return value;
-        }
+            for (byte i = 0; i < root.getChildren().size(); ++i) {
+                logger.info(depth);
 
-        // Otherwise we're trying to minimize on this move
-        else {
-            short value = Short.MAX_VALUE;
+                MinimaxNode childNode = root.getChildren().get(i);
 
-            // Generate the child states
-            Collection<Board> children = this.generateChildStates(root.getData(), !team);
-
-            // Leaf node
-            if (children.size() == 0) {
-                value = SimpleChessHeuristic.generateValue(root.getData(), this.team);
-                return value;
-            }
-
-            // Process the child states
-            for (Board child : children) {
-                // Add the node to the tree
-                MinimaxNode childNode = new MinimaxNode(child);
-                MinimaxTreeControl.addNode(childNode, root);
-
-                value = (short) Math.min(value, generateSubTree(childNode, depth-1, α, β, true));
+                value = (short) Math.min(value, generateSubTree(childNode, depth - 1, α, β, true));
                 β = (short) Math.min(value, β);
 
                 // Check for alpha cutoff
@@ -168,10 +158,10 @@ public class PlayerAI implements Player {
                     break;
                 }
             }
-
-            root.setValue(value);
-            return value;
         }
+
+        root.setValue(value);
+        return value;
     }
 
     @Override
@@ -179,11 +169,11 @@ public class PlayerAI implements Player {
         return this.nodesSearched;
     }
 
-    private Collection<Board> generateChildStates(Board board, boolean team) {
-        ArrayList<Board> result = new ArrayList<>();
+    private List<Board> generateChildStates(Board board, boolean team) {
+        List<Board> result = new ArrayList<>();
 
         // Generate result boards
-        Collection<Move> legalMoves = this.moveGenerator.generateMoves(board, team);
+        List<Move> legalMoves = this.moveGenerator.generateMoves(board, team);
 
         for (Move legalMove : legalMoves) {
             Board possible = new ChessBitBoard(board);

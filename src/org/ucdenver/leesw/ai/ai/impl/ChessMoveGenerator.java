@@ -4,7 +4,6 @@ import org.ucdenver.leesw.ai.BitUtilities;
 import org.ucdenver.leesw.ai.ai.Move;
 import org.ucdenver.leesw.ai.ai.MoveGenerator;
 import org.ucdenver.leesw.ai.board.Board;
-import org.ucdenver.leesw.ai.board.impl.ChessBitBoardLayerUtil;
 import org.ucdenver.leesw.ai.pieces.Piece;
 import org.ucdenver.leesw.ai.pieces.Team;
 
@@ -12,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by william.lees on 9/15/15.
@@ -21,7 +20,7 @@ public class ChessMoveGenerator implements MoveGenerator {
     private static Logger logger = LogManager.getLogger(ChessMoveGenerator.class);
 
     @Override
-    public Collection<Move> generateMoves(Board board, boolean team) {
+    public List<Move> generateMoves(Board board, boolean team) {
         ArrayList<Move> result = new ArrayList<>();
         long freeSpaces = ~board.flatten();
         long enemyPieces = board.flattenTeam(!team);
@@ -49,7 +48,7 @@ public class ChessMoveGenerator implements MoveGenerator {
         return result;
     }
 
-    private Collection<Move> generateAllPawnMoves(long startState, boolean team, long freeSpaces, long enemyPieces) {
+    private List<Move> generateAllPawnMoves(long startState, boolean team, long freeSpaces, long enemyPieces) {
         ArrayList<Move> results = new ArrayList<>();
 
         // Check if there are any pieces to generate moves
@@ -137,7 +136,7 @@ public class ChessMoveGenerator implements MoveGenerator {
         return results;
     }
 
-    private Collection<Move> generateAllKingMoves(long startState, boolean team, long freeSpaces, long enemyPieces) {
+    private List<Move> generateAllKingMoves(long startState, boolean team, long freeSpaces, long enemyPieces) {
         ArrayList<Move> results = new ArrayList<>();
 
         // Check if there are any pieces to generate moves
@@ -146,7 +145,7 @@ public class ChessMoveGenerator implements MoveGenerator {
         }
 
         // Generate the individual pieces
-        ArrayList<Long> pieces = this.splitOutPieces(startState);
+        List<Long> pieces = this.splitOutPieces(startState);
 
         // Sanity check (there should be only one King)
         if (pieces.size() > 1) {
@@ -196,7 +195,7 @@ public class ChessMoveGenerator implements MoveGenerator {
         return results;
     }
 
-    private Collection<Move> generateAllQueenMoves(long startState, boolean team, Board board) {
+    private List<Move> generateAllQueenMoves(long startState, boolean team, Board board) {
         ArrayList<Move> results = new ArrayList<>();
 
         if (startState == 0b00L){
@@ -208,7 +207,7 @@ public class ChessMoveGenerator implements MoveGenerator {
         return results;
     }
 
-    private Collection<Move> generateAllRookMoves(long startState, boolean team, Board board, boolean forQueen) {
+    private List<Move> generateAllRookMoves(long startState, boolean team, Board board, boolean forQueen) {
         ArrayList<Move> results = new ArrayList<>();
         byte piece;
         if (forQueen) {
@@ -223,7 +222,7 @@ public class ChessMoveGenerator implements MoveGenerator {
         }
 
         // Generate the individual pieces
-        ArrayList<Long> pieces = this.splitOutPieces(startState);
+        List<Long> pieces = this.splitOutPieces(startState);
 
         // Loop through pieces and generate all moves for them
         for (long rook : pieces) {
@@ -330,7 +329,7 @@ public class ChessMoveGenerator implements MoveGenerator {
         return results;
     }
 
-    private Collection<Move> generateAllBishopMoves(long startState, boolean team, Board board, boolean forQueen) {
+    private List<Move> generateAllBishopMoves(long startState, boolean team, Board board, boolean forQueen) {
         ArrayList<Move> results = new ArrayList<>();
         byte piece;
         if (forQueen) {
@@ -345,7 +344,7 @@ public class ChessMoveGenerator implements MoveGenerator {
         }
 
         // Generate the individual pieces
-        ArrayList<Long> pieces = this.splitOutPieces(startState);
+        List<Long> pieces = this.splitOutPieces(startState);
 
         // Loop through pieces and generate all moves for them
         for (long bishop : pieces) {
@@ -452,7 +451,7 @@ public class ChessMoveGenerator implements MoveGenerator {
         return results;
     }
 
-    private ArrayList<Long> splitOutPieces(long state) {
+    private List<Long> splitOutPieces(long state) {
         ArrayList<Long> pieces = new ArrayList<>();
 
         long mask = 0b01L;
