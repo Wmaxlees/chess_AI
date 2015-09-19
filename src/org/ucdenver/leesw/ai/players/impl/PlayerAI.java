@@ -91,7 +91,8 @@ public class PlayerAI implements Player {
     }
 
     private boolean gameOver(MinimaxTree tree) {
-        return (ChessBitBoardLayerUtil.getPopulationCount(tree.getData().getPiecesOfType(Piece.BLACK_KING) & tree.getData().getPiecesOfType(Piece.WHITE_KING)) == 1);
+        return (ChessBitBoardLayerUtil.getPopulationCount(tree.getData().getPiecesOfType(Piece.BLACK_KING)) +
+                ChessBitBoardLayerUtil.getPopulationCount(tree.getData().getPiecesOfType(Piece.WHITE_KING)) == 1);
     }
 
     private short generateSubTree(MinimaxTree root, int depth, short α, short β, boolean maximize) {
@@ -130,7 +131,6 @@ public class PlayerAI implements Player {
             value = Short.MIN_VALUE;
 
             for (byte i = 0; i < root.getChildren().size(); ++i) {
-                logger.info(depth);
 
                 MinimaxNode childNode = root.getChildren().get(i);
 
@@ -146,7 +146,6 @@ public class PlayerAI implements Player {
             value = Short.MAX_VALUE;
 
             for (byte i = 0; i < root.getChildren().size(); ++i) {
-                logger.info(depth);
 
                 MinimaxNode childNode = root.getChildren().get(i);
 
